@@ -13,7 +13,7 @@ For what:
     -  List float "EatsHowMany" 
     -  List bool "FoodOrEater" 
 
-- Save to the Databse File `Database.SaveToDatabase(all the lists listed down)`, this includes, in this order:
+- Save to the Database File `Database.SaveToDatabase(all the lists listed down)`, this includes, in this order:
     -  List string "Names"
     -  List string "GetsEatenBy"
     -  List string "Eats"
