@@ -1,4 +1,6 @@
-﻿namespace Nahrungsnetze_und_Populationsentwicklung
+﻿using System;
+
+namespace Nahrungsnetze_und_Populationsentwicklung
 {
     internal class Program
     {
