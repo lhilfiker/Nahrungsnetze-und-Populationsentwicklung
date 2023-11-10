@@ -18,7 +18,15 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             List<bool> FoodOrEater = new();
             
             //Read The File
-            string jsonString = File.ReadAllText(filepath);
+            string jsonString;
+            try
+            {
+                jsonString = File.ReadAllText(filepath);
+            }
+            catch
+            {
+                return null;
+            }
             var allData = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(jsonString);
 
             //Put it into the lists
@@ -64,9 +72,12 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             //Save it
             try
             {
-                File.WriteAllText(filepath, jsonString);    
+                File.WriteAllText(filepath, jsonString);
             }
-            catch {}
+            catch
+            {
+                return;
+            }
         }
     }
 }
