@@ -44,7 +44,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             //Check if file is valid
             if (!File.Exists(filepath) && Path.GetExtension(filepath) != ".json") return;
 
-            //Save each item
+            //Convert To json
             var allData = new List<Dictionary<string, object>>();
             for (int i = 0; i > Names.Count(); i++)
             {
@@ -61,6 +61,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             }
             string jsonString = JsonSerializer.Serialize(allData, new JsonSerializerOptions { WriteIndented = true });
 
+            //Save it
             try
             {
                 File.WriteAllText(filepath, jsonString);    
