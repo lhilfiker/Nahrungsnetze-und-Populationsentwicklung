@@ -4,7 +4,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 {
     internal class Database
     {
-        static (List<string>, List<string>, List<string>, List<float>, List<float>, List<bool>)? OpenDatabse(string filepath)
+        static (List<string>, List<string>, List<string>, List<float>, List<float>, List<bool>)? OpenDatabase(string filepath)
         {
             //Check if file is valid
             if (!File.Exists(filepath) && Path.GetExtension(filepath) != ".json") return null;
