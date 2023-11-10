@@ -8,9 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dc9ac8a1-3410-454e-9cd8-d57a234e3f0e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../.idea/.idea.Nahrungsnetze-und-Populationsentwicklung.dir/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Nahrungsnetze-und-Populationsentwicklung/.idea/.idea.Nahrungsnetze-und-Populationsentwicklung/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Nahrungsnetze und Populationsentwicklung/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Nahrungsnetze und Populationsentwicklung/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Nahrungsnetze und Populationsentwicklung/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Nahrungsnetze und Populationsentwicklung/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,8 +17,23 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "RebelCoderJames"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="1d60cea3-3efe-4d3c-bcc7-e48c9c715ac5" />
+        <option name="url" value="https://github.com/RebelCoderJames/Nahrungsnetze-und-Populationsentwicklung.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -34,7 +48,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/user/Dokumente/GIT/Nahrungsnetze-und-Populationsentwicklung/src/Nahrungsnetze und Populationsentwicklung/Nahrungsnetze und Populationsentwicklung.sln",
+    "last_opened_file_path": "/home/user/Dokumente/GIT/Nahrungsnetze-und-Populationsentwicklung/src/Nahrungsnetze und Populationsentwicklung.sln",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -79,13 +93,35 @@
       <updated>1699609474129</updated>
       <workItem from="1699609475128" duration="2574000" />
       <workItem from="1699614560322" duration="308000" />
+      <workItem from="1699615024036" duration="2810000" />
     </task>
+    <task id="LOCAL-00001" summary="update comments">
+      <option name="closed" value="true" />
+      <created>1699615147060</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1699615147060</updated>
+    </task>
+    <task id="LOCAL-00002" summary="catch errors">
+      <option name="closed" value="true" />
+      <created>1699615377568</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1699615377568</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="update comments" />
+    <MESSAGE value="catch errors" />
+    <option name="LAST_COMMIT_MESSAGE" value="catch errors" />
   </component>
 </project>
