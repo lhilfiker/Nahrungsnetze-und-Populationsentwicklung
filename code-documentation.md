@@ -48,20 +48,20 @@ This function organizes the food web elements into hierarchical layers based on 
    After applying `SortByLayer`, we might get the following output:
 
    - **LayerIndexes**:
-     | Index | Value |
-     |-------|-------|
-     | 0     | 3     | (Grasshopper)
-     | 1     | 0     | (Plant)
-     | 2     | 1     | (Rabbit)
-     | 3     | 4     | (Snake)
-     | 4     | 2     | (Fox)
+| Index | Value |
+|-------|-------|
+| 0     | 3     | (Grasshopper)
+| 1     | 0     | (Plant)
+| 2     | 1     | (Rabbit)
+| 3     | 4     | (Snake)
+| 4     | 2     | (Fox)
 
    - **LayerBoundaries**:
-     | Index | Value |
-     |-------|-------|
-     | 0     | 2     | (End of Producers: Plant, Grasshopper)
-     | 1     | 4     | (End of Primary Consumers: Rabbit, Snake)
-     | 2     | 5     | (End of Secondary Consumers: Fox)
+| Index | Value |
+|-------|-------|
+| 0     | 2     | (End of Producers: Plant, Grasshopper)
+| 1     | 4     | (End of Primary Consumers: Rabbit, Snake)
+| 2     | 5     | (End of Secondary Consumers: Fox)
 
    Explanation
    - **LayerIndexes**: This shows that Grasshopper (index 3) and Plant (index 0) are at the bottom of the food chain (producers). Rabbit (index 1) and Snake (index 4) are the next level (primary consumers), and Fox (index 2) is a secondary consumer.
