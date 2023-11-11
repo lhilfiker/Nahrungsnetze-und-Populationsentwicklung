@@ -1,10 +1,10 @@
 # Code Documentation
 
-# Nahrungsnetz Lists & Variables:
+## Nahrungsnetz Lists & Variables:
 
-    -  List string "Names": The Name of the Animal/ Food
+    -  List string "Names": The Name of the Animal/Food
     -  List string "GetsEatenBy": From which animal it gets eaten(only one possible right now."" = eaten by nobody)
-    -  List string "Eats": Eats the folloeing Animals Food(Ignored if FoodOrEater is true)
+    -  List string "Eats": Eats the following Animals Food(Only one animal allowed right now)(Ignored if FoodOrEater is true)
     -  List float "Quantity" : How many there are (For the simulation)
     -  List float "EatsHowMany" : How much food it needs per Day
     -  List bool "FoodOrEater" : true if its food. false if it is an animal
