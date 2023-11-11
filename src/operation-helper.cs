@@ -8,7 +8,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
     {
 
 
-        static (List<int>, List<int>)? SortByLayer(List<string> Names, List<string> GetsEatenBy, List<string> Eats,
+        public static (List<int>, List<int>)? SortByLayer(List<string> Names, List<string> GetsEatenBy, List<string> Eats,
             List<float> Quantity, List<float> EatsHowMany, List<bool> FoodOrEater
             )
         {
