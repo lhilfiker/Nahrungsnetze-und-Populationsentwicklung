@@ -4,7 +4,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 {
     internal class Database
     {
-        static (List<string>, List<string>, List<string>, List<float>, List<float>, List<bool>)? OpenDatabase(string filepath)
+        public static (List<string>, List<string>, List<string>, List<float>, List<float>, List<bool>)? OpenDatabase(string filepath)
         {
             //Check if file is valid
             if (!File.Exists(filepath) && Path.GetExtension(filepath) != ".json") return null;
@@ -46,7 +46,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             return (Names, GetsEatenBy, Eats, Quantity, EatsHowMany, FoodOrEater);
         }
 
-        static void SaveToDatabase(List<string> Names, List<string> GetsEatenBy, List<string> Eats,
+        public static void SaveToDatabase(List<string> Names, List<string> GetsEatenBy, List<string> Eats,
             List<float> Quantity, List<float> EatsHowMany, List<bool> FoodOrEater, string filepath)
         {
             //Check if file is valid
