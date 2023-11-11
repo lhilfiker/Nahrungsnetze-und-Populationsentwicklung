@@ -31,23 +31,23 @@ This class contains functions to perform operations like sorting the food web la
 - Function: SortByLayer
 This function organizes the food web elements into hierarchical layers based on their trophic levels (i.e., their position in the food chain).
 
-Input Parameters
-- Lists of `Names`, `GetsEatenBy`, `Eats`, `Quantity`, `EatsHowMany`, and `FoodOrEater`.
+   Input Parameters
+   - Lists of `Names`, `GetsEatenBy`, `Eats`, `Quantity`, `EatsHowMany`, and `FoodOrEater`.
 
-Output
-- **LayerIndexes** (`List<int>`): A list of indexes representing the sorted order of elements as per their trophic layers.
-- **LayerBoundaries** (`List<int>`): A list indicating the end index within `LayerIndexes` for each trophic layer.
+   Output
+   - **LayerIndexes** (`List<int>`): A list of indexes representing the sorted order of elements as per their trophic layers.
+   - **LayerBoundaries** (`List<int>`): A list indicating the end index within `LayerIndexes` for each trophic layer.
 
-Example
-Suppose we have the following input data:
+   Example
+   Suppose we have the following input data:
 
-- **Names**: [Plant, Rabbit, Fox, Grasshopper, Snake]
-- **GetsEatenBy**: [Rabbit, Fox, "", Grasshopper, Fox]
-- **Eats**: ["", Plant, Rabbit, Plant, Grasshopper]
+   - **Names**: [Plant, Rabbit, Fox, Grasshopper, Snake]
+   - **GetsEatenBy**: [Rabbit, Fox, "", Grasshopper, Fox]
+   - **Eats**: ["", Plant, Rabbit, Plant, Grasshopper]
 
-After applying `SortByLayer`, we might get the following output:
+   After applying `SortByLayer`, we might get the following output:
 
-- **LayerIndexes**:
+   - **LayerIndexes**:
   | Index | Value |
   |-------|-------|
   | 0     | 3     | (Grasshopper)
@@ -56,16 +56,16 @@ After applying `SortByLayer`, we might get the following output:
   | 3     | 4     | (Snake)
   | 4     | 2     | (Fox)
 
-- **LayerBoundaries**:
+   - **LayerBoundaries**:
   | Index | Value |
   |-------|-------|
   | 0     | 2     | (End of Producers: Plant, Grasshopper)
   | 1     | 4     | (End of Primary Consumers: Rabbit, Snake)
   | 2     | 5     | (End of Secondary Consumers: Fox)
 
-#### Explanation
-- **LayerIndexes**: This shows that Grasshopper (index 3) and Plant (index 0) are at the bottom of the food chain (producers). Rabbit (index 1) and Snake (index 4) are the next level (primary consumers), and Fox (index 2) is a secondary consumer.
-- **LayerBoundaries**: Indicates the division of trophic levels. The first two elements (indices 0 and 3) are producers, the next two (indices 1 and 4) are primary consumers, and the last one (index 2) is a secondary consumer.
+   Explanation
+   - **LayerIndexes**: This shows that Grasshopper (index 3) and Plant (index 0) are at the bottom of the food chain (producers). Rabbit (index 1) and Snake (index 4) are the next level (primary consumers), and Fox (index 2) is a secondary consumer.
+   - **LayerBoundaries**: Indicates the division of trophic levels. The first two elements (indices 0 and 3) are producers, the next two (indices 1 and 4) are primary consumers, and the last one (index 2) is a secondary consumer.
 
 ### Version Information
 - Last Updated: 11.11.2023
