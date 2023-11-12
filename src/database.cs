@@ -34,12 +34,24 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             {
                 foreach (var item in itemList)
                 {
-                    if (item.Key == "name") Names.Add(Convert.ToString(item.Value));
-                    if (item.Key == "getseatenby") GetsEatenBy.Add(Convert.ToString(item.Value));
-                    if (item.Key == "eats") Eats.Add(Convert.ToString(item.Value));
-                    if (item.Key == "quantity") Quantity.Add((float)Convert.ToDecimal(item.Value));
-                    if (item.Key == "eatshowmany") EatsHowMany.Add((float)Convert.ToDecimal(item.Value));
-                    if (item.Key == "foodoreater") FoodOrEater.Add(Convert.ToBoolean(item.Value));
+                    if (item.Key == "name") Names.Add(item.Value.ToString());
+                    if (item.Key == "getseatenby") GetsEatenBy.Add(item.Value.ToString());
+                    if (item.Key == "eats") Eats.Add(item.Value.ToString());
+                    if (item.Key == "quantity") 
+                    {
+                        if (item.Value is JsonElement quantElement)
+                            Quantity.Add(quantElement.GetSingle());
+                    }
+                    if (item.Key == "eatshowmany") 
+                    {
+                        if (item.Value is JsonElement eatsElement)
+                            EatsHowMany.Add(eatsElement.GetSingle());
+                    }
+                    if (item.Key == "foodoreater") 
+                    {
+                        if (item.Value is JsonElement eaterElement)
+                            FoodOrEater.Add(eaterElement.GetBoolean());
+                    }
                 }
             }
             // Return
