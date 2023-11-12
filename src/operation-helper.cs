@@ -1,75 +1,56 @@
-
-
-using System.Runtime.CompilerServices;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Nahrungsnetze_und_Populationsentwicklung
 {
     internal class OperationHelper
     {
-
-
-        public static (List<int>, List<int>)? SortByLayer(List<string> Names, List<string> GetsEatenBy, List<string> Eats,
-            List<float> Quantity, List<float> EatsHowMany, List<bool> FoodOrEater
-            )
+        public static (List<int> LayerIndexes, List<int> LayerBoundaries) SortByLayer(
+            List<string> names, List<string> getsEatenBy, List<string> eats, List<bool> foodOrEater)
         {
-            int ItemsAdded = 0;
-            List<int> LatestFood = new();
-            List<int> AlreadyAdded = new();
-            List<int> TempLast = new();
-            List<int> LayersEnd = new();
-            while (ItemsAdded != Names.Count())
+            List<int> AllItems = new();
+            List<int> LayerEndings = new();
+            List<int> Remaining = Enumerable.Range(0, names.Count).ToList();
+            
+            // Layer 1
+            for (int i = 0; i < names.Count; i++)
             {
-                if (LatestFood.Count() == 0)
+                if (eats[i] == "" || foodOrEater[i])
                 {
-                    int i = 0;
-                    foreach (var item in FoodOrEater)
-                    {
-                        if (item)
-                        {
-                            LatestFood.Add(i);
-                            AlreadyAdded.Add(i);
-                            ItemsAdded++;
-                        }
-
-                        i++;
-                    }
+                    AllItems.Add(i);
+                    Remaining.Remove(i);
                 }
-                else
-                {
-                    int i = -1;
-                    TempLast.Clear();
-                    foreach (var item in Eats)
-                    {
-                        i++;
-                        if (FoodOrEater[i]) continue;
-                        if (AlreadyAdded.Contains(i)) continue;
-                        
-                        if(LatestFood.Contains(Names.IndexOf(item)))
-                        {
-                            TempLast.Add(i);
-                            AlreadyAdded.Add(i);
-                            ItemsAdded++;
-                        }
-                    }
-
-                    LatestFood.Clear();
-                    foreach (var item in TempLast)
-                    {
-                        LatestFood.Add(item);
-                    }
-
-                    TempLast.Clear();
-                }
-                LayersEnd.Add(AlreadyAdded.Count() - 1);
             }
-            return (AlreadyAdded, LayersEnd);            
-        }
-        
-        static (List<string>, List<string>, List<string>, List<float>, List<float>, List<bool>)? Default(List<string> Names, List<string> GetsEatenBy, List<string> Eats,
-            List<float> Quantity, List<float> EatsHowMany, List<bool> FoodOrEater
-        )
-        {
-            return null;
+            LayerEndings.Add(AllItems.Count);
+            
+            // Other Layers
+            int iterations = 0;
+            while (iterations < 1000 && Remaining.Any())
+            {
+                List<int> toRemove = new List<int>();
+                foreach (int item in Remaining)
+                {
+                    bool EatsSomething = AllItems.Any(food => getsEatenBy[food] == names[item] || eats[item] == names[food]);
+                    bool WillItEatSomething = Remaining.Any(food => getsEatenBy[food] == names[item]);
+
+                    if (!WillItEatSomething && EatsSomething)
+                    {
+                        toRemove.Add(item);
+                        AllItems.Add(item);
+                    }
+                }
+
+                foreach (var item in toRemove)
+                {
+                    Remaining.Remove(item);
+                }
+
+                LayerEndings.Add(AllItems.Count);
+                iterations++;
+            }
+            
+            return (AllItems, LayerEndings);
         }
     }
 }

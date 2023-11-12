@@ -18,16 +18,16 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             List<string> GetsEatenBy = new List<string> 
             {
-                "", "Spinne", "Kleiner Vogel", "Großer Vogel", "Käfer", 
-                "Schlange", "Schlange", "Fuchs", "Eule", "Wolf", 
-                "Fuchs", "Wolf", "Wolf", "", "Wurm"
+                "", "Kleiner Vogel", "Kleiner Vogel", "Großer Vogel", "Kleiner Vogel", 
+                "Schlange", "Fuchs", "Großer Vogel", "Eule", "Wolf", 
+                "Fuchs", "Wolf", "Wolf", "", "Käfer"
             };
 
             List<string> Eats = new List<string> 
             {
-                "", "Blume", "Käfer", "Spinne", "Pilz", 
-                "Wurm", "Blume", "Frosch", "Kleiner Vogel", "Hase", 
-                "Blume", "Großer Vogel", "Blume", "Hirsch", "Blume"
+                "", "Pilz", "Käfer", "Wurm", "", 
+                "Wurm", "Blume", "Frosch", "Maus", "Hase", 
+                "Blume", "Kleiner Vogel", "Blume", "Hirsch", ""
             };
 
             List<float> Quantity = new List<float> 
@@ -39,17 +39,18 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             List<float> EatsHowMany = new List<float> 
             {
-                0, 0.1f, 0.2f, 0.15f, 0.05f, 
-                0.2f, 0.1f, 0.3f, 0.25f, 0.4f, 
-                0.1f, 0.3f, 0.5f, 0.6f, 0
+                0, 0.05f, 0.1f, 0.2f, 0.1f, 
+                0.15f, 0.1f, 0.25f, 0.3f, 0.35f, 
+                0.1f, 0.4f, 0.5f, 0.6f, 0
             };
 
             List<bool> FoodOrEater = new List<bool> 
             {
-                true, false, false, false, true, 
+                true, false, false, false, false, 
                 false, false, false, false, false, 
                 false, false, false, false, true
             };
+
 
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "testcase.json");
 
@@ -81,32 +82,25 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             Console.WriteLine("Load/SAVE Finsihed. Will Sort it now.");
             
             // Call the SortByLayer function
-            var sortedLayers = OperationHelper.SortByLayer(Names, GetsEatenBy, Eats, Quantity, EatsHowMany, FoodOrEater);
+            var sortedLayers = OperationHelper.SortByLayer(Names, GetsEatenBy, Eats, FoodOrEater);
 
-            if (sortedLayers.HasValue)
+            var (layerIndexes, layerBoundaries) = sortedLayers;
+
+            int layerStart = 0;
+            int layerNumber = 1;
+
+            // Iterate through the LayerBoundaries to display each layer
+            foreach (var boundary in layerBoundaries)
             {
-                var (layerIndexes, layerBoundaries) = sortedLayers.Value;
-
-                int layerStart = 0;
-                int layerNumber = 1;
-
-                // Iterate through the LayerBoundaries to display each layer
-                foreach (var boundary in layerBoundaries)
+                Console.WriteLine($"Layer {layerNumber}:");
+                for (int i = layerStart; i < boundary; i++)
                 {
-                    Console.WriteLine($"Layer {layerNumber}:");
-                    for (int i = layerStart; i < boundary; i++)
-                    {
-                        // Display the name using the index from LayerIndexes
-                        Console.WriteLine(Names[layerIndexes[i]]);
-                    }
-                    layerStart = boundary;
-                    layerNumber++;
-                    Console.WriteLine(); // For better readability
+                    // Display the name using the index from LayerIndexes
+                    Console.WriteLine(Names[layerIndexes[i]]);
                 }
-            }
-            else
-            {
-                Console.WriteLine("Sorting failed or returned no data.");
+                layerStart = boundary;
+                layerNumber++;
+                Console.WriteLine(); // For better readability
             }
 
 
