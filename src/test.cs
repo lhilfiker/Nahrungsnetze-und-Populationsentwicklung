@@ -6,6 +6,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
     {
         public static void TestCase()
         {
+            
+            Console.WriteLine("Nahrungsnetz and Databse Save Load and Sort TEST. A test databse will be created in your desktop folder. Then it will get loaded and sorted. You can change the values in code.\n");
 
             List<string> Names = new List<string> 
             {
@@ -60,7 +62,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             EatsHowMany.Clear();
             FoodOrEater.Clear();
             
-            Console.WriteLine("Saved. I will try to load it now.");
+            Console.WriteLine("\nSaved. I will try to load it now.\n");
             
             
             
@@ -83,25 +85,30 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             if (sortedLayers.HasValue)
             {
-                var (layerOne, layerTwo) = sortedLayers.Value;
+                var (layerIndexes, layerBoundaries) = sortedLayers.Value;
 
-                // Display the results
-                Console.WriteLine("Layer One:");
-                foreach (var item in layerOne)
-                {
-                    Console.WriteLine(item);
-                }
+                int layerStart = 0;
+                int layerNumber = 1;
 
-                Console.WriteLine("\nLayer Two:");
-                foreach (var item in layerTwo)
+                // Iterate through the LayerBoundaries to display each layer
+                foreach (var boundary in layerBoundaries)
                 {
-                    Console.WriteLine(item);
+                    Console.WriteLine($"Layer {layerNumber}:");
+                    for (int i = layerStart; i < boundary; i++)
+                    {
+                        // Display the name using the index from LayerIndexes
+                        Console.WriteLine(Names[layerIndexes[i]]);
+                    }
+                    layerStart = boundary;
+                    layerNumber++;
+                    Console.WriteLine(); // For better readability
                 }
             }
             else
             {
                 Console.WriteLine("Sorting failed or returned no data.");
             }
+
 
             
 
