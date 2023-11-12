@@ -54,7 +54,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             //Convert To json
             var allData = new List<Dictionary<string, object>>();
-            for (int i = 0; i > Names.Count(); i++)
+            for (int i = 0; i < Names.Count(); i++)
             {
                 var data = new Dictionary<string, object>
                 {
