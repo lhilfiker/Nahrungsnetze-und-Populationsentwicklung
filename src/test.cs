@@ -102,6 +102,20 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 layerNumber++;
                 Console.WriteLine(); // For better readability
             }
+            
+            Console.WriteLine("Done. I will now get Layer 1-10 each with the Helper");
+
+            List<int> GetLayerOutput = new();
+            for (int i = 1; i < 11; i++)
+            {
+                GetLayerOutput = OperationHelper.GetLayer(layerIndexes, layerBoundaries, i);
+                Console.WriteLine($"\nLayer:{i}:");
+                foreach (var item in GetLayerOutput)
+                {
+                    Console.WriteLine(Names[item]);
+                }
+                
+            }
 
 
             
