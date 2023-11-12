@@ -11,7 +11,7 @@
 - **FoodOrEater** (`List<bool>`): Flags whether an item is food (`true`) or an animal (`false`).
 
 ### Future Implementations
-- 
+- Repliactes per day
 
 ## Database.cs
 
