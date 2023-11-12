@@ -60,7 +60,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
                     TempLast.Clear();
                 }
-                LayersEnd.Add(AlreadyAdded.Last());
+                LayersEnd.Add(AlreadyAdded.Count() - 1);
             }
             return (AlreadyAdded, LayersEnd);            
         }
