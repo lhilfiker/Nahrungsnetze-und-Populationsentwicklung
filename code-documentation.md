@@ -29,7 +29,7 @@ This class contains functions to perform operations like sorting the food web la
 
 #### Methods
 - Function: SortByLayer
-This function organizes the food web elements into hierarchical layers based on their trophic levels (i.e., their position in the food chain).
+   This function organizes the food web elements into hierarchical layers based on their trophic levels (i.e., their position in the food chain).
 
    Input Parameters
    - Lists of `Names`, `GetsEatenBy`, `Eats` and `FoodOrEater`.
@@ -69,6 +69,17 @@ This function organizes the food web elements into hierarchical layers based on 
    Explanation
    - **LayerIndexes**: This shows that Grasshopper (index 3) and Plant (index 0) are at the bottom of the food chain (producers). Rabbit (index 1) and Snake (index 4) are the next level (primary consumers), and Fox (index 2) is a secondary consumer.
    - **LayerBoundaries**: Indicates the division of trophic levels. The first two elements (indices 0 and 3) are producers, the next two (indices 1 and 4) are primary consumers, and the last one (index 2) is a secondary consumer.
+
+- Function: GetLayer
+  This Function gives you back only the Layer you requested.
+
+  Input Parameters:
+  - **LayerIndexes**: The first output from the Helper Function `SortByLayer`
+  - **LayerBoundaries**: The second output from the Helper Function `SortByLayer`
+  - **Layer Number**: The Layer you want back: Layers start by 1.
+
+  Output:
+  - `List<int>`: Lists all the items from the requested Layer. It will give an empty List back if the layer doesnt exist.
 
 ### Version Information
 - Last Updated: 12.11.2023
