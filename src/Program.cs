@@ -6,7 +6,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            test.TestCase();
         }
     }
 }
