@@ -32,7 +32,7 @@ This class contains functions to perform operations like sorting the food web la
 This function organizes the food web elements into hierarchical layers based on their trophic levels (i.e., their position in the food chain).
 
    Input Parameters
-   - Lists of `Names`, `GetsEatenBy`, `Eats`, `Quantity`, `EatsHowMany`, and `FoodOrEater`.
+   - Lists of `Names`, `GetsEatenBy`, `Eats` and `FoodOrEater`.
 
    Output
    - **LayerIndexes** (`List<int>`): A list of indexes representing the sorted order of elements as per their trophic layers.
@@ -71,7 +71,7 @@ This function organizes the food web elements into hierarchical layers based on 
    - **LayerBoundaries**: Indicates the division of trophic levels. The first two elements (indices 0 and 3) are producers, the next two (indices 1 and 4) are primary consumers, and the last one (index 2) is a secondary consumer.
 
 ### Version Information
-- Last Updated: 11.11.2023
+- Last Updated: 12.11.2023
 
 ### Author
 - RebelCoderJames
