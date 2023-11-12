@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace Nahrungsnetze_und_Populationsentwicklung
 {
@@ -52,5 +53,27 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             
             return (AllItems, LayerEndings);
         }
+
+        public static List<int> GetLayer(List<int> AllItems, List<int> LayerEndings, int Layer)
+        {
+            List<int> LayerRequested = new();
+            if (AllItems == null || LayerEndings == null || AllItems.Count == 0 || LayerEndings.Count == 0)
+                return LayerRequested;
+
+            if (Layer < 1 || Layer > LayerEndings.Count) return LayerRequested;
+
+            int start = Layer == 1 ? 0 : LayerEndings[Layer - 2];
+            int end = LayerEndings[Layer - 1];
+
+            if (start < 0 || end > AllItems.Count) return LayerRequested;
+
+            for (int i = start; i < end; i++)
+            {
+                LayerRequested.Add(AllItems[i]);
+            }
+
+            return LayerRequested;
+        }
+
     }
 }
