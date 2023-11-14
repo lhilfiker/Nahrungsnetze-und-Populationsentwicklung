@@ -10,8 +10,10 @@
 - **EatsHowMany** (`List<float>`): The amount of food each animal requires per day.
 - **FoodOrEater** (`List<bool>`): Flags whether an item is food (`true`) or an animal (`false`).
 
-### Future Implementations
+### Soon to be implemented Implementations
 - Repliactes per day
+- Deads per day
+- Multiplier(like 0.56% for a 56% chance for the max deads or replicates per day)
 
 ## Database.cs
 
