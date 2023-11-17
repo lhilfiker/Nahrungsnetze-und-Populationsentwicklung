@@ -62,7 +62,16 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             List<float> Quantity, List<float> EatsHowMany, List<bool> FoodOrEater, string filepath)
         {
             //Check if file is valid
-            if (!File.Exists(filepath) && Path.GetExtension(filepath) != ".json") return;
+            if (Path.GetExtension(filepath) != ".json") return;
+            if (!File.Exists(filepath))
+            {
+                string directoryPath = Path.GetDirectoryName(filepath);
+
+                if (!string.IsNullOrWhiteSpace(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+            }
 
             //Convert To json
             var allData = new List<Dictionary<string, object>>();
