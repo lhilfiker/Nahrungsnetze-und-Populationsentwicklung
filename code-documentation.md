@@ -83,8 +83,20 @@ This class contains functions to perform operations like sorting the food web la
   Output:
   - `List<int>`: Lists all the items from the requested Layer. It will give an empty List back if the layer doesnt exist.
 
+- Function: InputValidation
+  This Functions checks if all the values are correct so there isnt an error when try to render it.
+
+  NOTE: This doesnt check yet if the parameters to run a simulation are also correct.
+
+  Input Parameters:
+  - Lists of `Names`, `GetsEatenBy`, `Eats` and `FoodOrEater`.
+
+  Output:
+  - **Boolean**: true if everything is ok. false if there is an error.
+  - **string**: if Bool is false it will give an error message what is wrong.
+
 ### Version Information
-- Last Updated: 12.11.2023
+- Last Updated: 17.11.2023
 
 ### Author
 - RebelCoderJames
