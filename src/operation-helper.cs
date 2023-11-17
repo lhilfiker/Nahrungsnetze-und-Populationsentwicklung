@@ -75,5 +75,43 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             return LayerRequested;
         }
 
+        public static (bool, string) ValueValidation(List<string> names, List<string> getsEatenBy, List<string> eats, List<bool> foodOrEater)
+        {
+            foreach (var item in getsEatenBy)
+            {
+                if (!names.Contains(item))
+                {
+                    return (false, $"{item} doesnt exist in Names. This is not valid.");
+                }
+            }
+            foreach (var item in eats)
+            {
+                if (!names.Contains(item))
+                {
+                    return (false, $"{item} doesnt exist in eats. This is not valid.");
+                }
+            }
+            foreach (var item in eats)
+            {
+                if (!names.Contains(item))
+                {
+                    return (false, $"{item} doesnt exist in eats. This is not valid.");
+                }
+            }
+
+            int i = 0;
+            foreach (var item in foodOrEater)
+            {
+                if (item && eats[i] != "" )
+                {
+                    return (false, $"{names[i]} can not be Food and Eat something.");
+                }
+
+                i++;
+            }
+            
+            return (true, "all good.");
+        }
+
     }
 }
