@@ -142,10 +142,16 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         private void InitializePictureBox()
         {
             pictureBox = new PictureBox();
-            pictureBox.Size = new Size(800, 600); // Anpassen der Größe
+
+            // Calculate size as 80% of form's width and 90% of form's height
+            int pictureBoxWidth = (int)(this.ClientSize.Width * 0.8);
+            int pictureBoxHeight = (int)(this.ClientSize.Height * 0.9);
+
+            pictureBox.Size = new Size(pictureBoxWidth, pictureBoxHeight);
+            pictureBox.Location = new Point(0, 0); // Positioned at the top-left corner
             pictureBox.Paint += PictureBox_Paint;
 
-            this.Controls.Add(pictureBox); // PictureBox zum Formular hinzufügen
+            this.Controls.Add(pictureBox);
         }
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
@@ -159,54 +165,43 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             Brush textBrush = Brushes.Black;
             Pen linePen = new Pen(Brushes.Black, 2);
 
-            int horizontalSpacing = 150;
-            int verticalSpacing = 120;
-            int itemWidth = 30;
-
-            int totalWidth = (layerBoundaries.Count - 1) * horizontalSpacing + itemWidth;
-            int totalHeight = data.Names.Count * (itemWidth + verticalSpacing) - verticalSpacing;
-
-            int startX = Math.Max((pictureBox.ClientSize.Width - totalWidth) / 2, 0);
-            int startY = Math.Max((pictureBox.ClientSize.Height - totalHeight) / 2, 0);
+            // Dynamically calculate horizontal and vertical spacing
+            int horizontalSpacing = pictureBox.Width / (layerBoundaries.Count + 1);
+            int verticalSpacing = pictureBox.Height / (data.Names.Count + 1);
+            int leftMargin = (int)(pictureBox.Width * 0.02);
+            int itemWidth = 20; // Adjust as needed
 
             Dictionary<string, Point> animalPositions = new Dictionary<string, Point>();
 
             for (int i = 0; i < layerBoundaries.Count; i++)
             {
                 int boundary = layerBoundaries[i];
-
-                int totalItemsWidth = (boundary - ((i == 0) ? 0 : layerBoundaries[i - 1])) * (itemWidth + verticalSpacing) - verticalSpacing;
-                int currentLayerHeight = totalItemsWidth;
-
-                if (currentLayerHeight > pictureBox.ClientSize.Height)
-                {
-                    startY = 0;
-                    totalHeight = pictureBox.ClientSize.Height;
-                }
-                else
-                {
-                    startY = Math.Max((pictureBox.ClientSize.Height - currentLayerHeight) / 2, 0);
-                    totalHeight = currentLayerHeight;
-                }
+                int layerHeight = ((boundary - (i == 0 ? 0 : layerBoundaries[i - 1])) * verticalSpacing) + itemWidth;
+                int startY = (pictureBox.Height - layerHeight) / 2;
 
                 for (int j = (i == 0) ? 0 : layerBoundaries[i - 1]; j < boundary; j++)
                 {
                     int index = layerIndexes[j];
                     string currentAnimal = data.Names[index];
 
-                    int posX = startX + (i * horizontalSpacing);
+                    // Adjust posX to include the left margin
+                    int posX = leftMargin + (i * horizontalSpacing);
                     int posY = startY;
 
+                    // Draw the item
                     g.FillEllipse(Brushes.Red, posX, posY, itemWidth, itemWidth);
                     g.DrawString(currentAnimal, font, textBrush, posX - 10, posY - 20);
 
+                    // Store the position for drawing connections later
                     animalPositions[currentAnimal] = new Point(posX + itemWidth / 2, posY + itemWidth / 2);
 
-                    startY += itemWidth + verticalSpacing;
+                    // Increment startY for the next item in the same layer
+                    startY += verticalSpacing;
                 }
             }
 
-            // Zeichne Verbindungen basierend auf Fressbeziehungen
+
+            // Draw connections based on feeding relationships
             for (int i = 0; i < data.Names.Count; i++)
             {
                 string currentAnimal = data.Names[i];
@@ -217,7 +212,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 {
                     Point predatorPos = animalPositions[predator];
                     Point currentPos = animalPositions[currentAnimal];
-
                     g.DrawLine(linePen, predatorPos.X, predatorPos.Y, currentPos.X, currentPos.Y);
                 }
 
@@ -225,10 +219,10 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 {
                     Point preyPos = animalPositions[prey];
                     Point currentPos = animalPositions[currentAnimal];
-
                     g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
                 }
             }
         }
+
     }
 }
