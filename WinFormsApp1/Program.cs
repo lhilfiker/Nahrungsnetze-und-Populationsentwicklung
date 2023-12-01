@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Resources;
 using System.Windows.Forms;
 
 namespace Nahrungsnetze_und_Populationsentwicklung
 {
     public partial class WelcomeForm : Form
     {
+
         public WelcomeForm()
         {
             InitializeComponent();
@@ -22,7 +24,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             // 
             this.ClientSize = new System.Drawing.Size(883, 622);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "WelcomeForm";
+            this.Name = "Nahrungsnetz";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Nahrungsnetze und Populationsentwicklung";
             this.Load += new System.EventHandler(this.WelcomeForm_Load);
@@ -52,14 +54,20 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Title = "Wähle eine Datei aus";
-                openFileDialog.Filter = "Textdateien (*.txt)|*.txt|Alle Dateien (*.*)|*.*";
+                openFileDialog.Filter = "Nahrungsnetz Datei (*.json)|*.json";
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     // Hier kannst du die ausgewählte Datei verwenden
-                    string selectedFile = openFileDialog.FileName;
-                    MessageBox.Show($"Die ausgewählte Datei ist: {selectedFile}");
+                    data.path = openFileDialog.FileName;
+                    this.Hide(); // Hide the current form
+
+                    // Create and show the MainForm
+                    MainForm mainForm = new MainForm();
+                    mainForm.Show();
+
                 }
+
             }
         }
 
@@ -74,54 +82,15 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             this.Hide(); // Verwende Hide(), um das Begrüßungsfenster zu verbergen
         }
     }
-
+    
     public partial class MainForm : Form
     {
-        public List<string> Names = new List<string>
-            {
-                "Blume", "Käfer", "Spinne", "Kleiner Vogel", "Wurm",
-                "Frosch", "Maus", "Schlange", "Großer Vogel", "Fuchs",
-                "Hase", "Eule", "Hirsch", "Wolf", "Pilz"
-            };
-
-        public List<string> GetsEatenBy = new List<string>
-            {
-                "", "Kleiner Vogel", "Kleiner Vogel", "Großer Vogel", "Kleiner Vogel",
-                "Schlange", "Fuchs", "Großer Vogel", "Eule", "Wolf",
-                "Fuchs", "Wolf", "Wolf", "", "Käfer"
-            };
-
-        public List<string> Eats = new List<string>
-            {
-                "", "Pilz", "Käfer", "Wurm", "",
-                "Wurm", "Blume", "Frosch", "Maus", "Hase",
-                "Blume", "Kleiner Vogel", "Blume", "Hirsch", ""
-            };
-
-        public List<float> Quantity = new List<float>
-            {
-                1000, 500, 300, 200, 600,
-                150, 400, 100, 150, 70,
-                350, 60, 80, 50, 900
-            };
-
-        public List<float> EatsHowMany = new List<float>
-            {
-                0, 0.05f, 0.1f, 0.2f, 0.1f,
-                0.15f, 0.1f, 0.25f, 0.3f, 0.35f,
-                0.1f, 0.4f, 0.5f, 0.6f, 0
-            };
-
-        public List<bool> FoodOrEater = new List<bool>
-            {
-                true, false, false, false, false,
-                false, false, false, false, false,
-                false, false, false, false, true
-            };
-
         [STAThread]
+        
         static void Main()
         {
+
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -135,9 +104,16 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
         public MainForm()
         {
+            var result = Database.OpenDatabase(data.path);
+            if (result.HasValue)
+            {
+                // Assign the values from the result to the lists
+                (data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany, data.FoodOrEater) = result.Value;
+            }
+
             InitializeComponent();
 
-            var sortedLayers = OperationHelper.SortByLayer(Names, GetsEatenBy, Eats, FoodOrEater);
+            var sortedLayers = OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
             (layerIndexes, layerBoundaries) = sortedLayers;
 
             InitializePictureBox();
@@ -145,10 +121,14 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WelcomeForm));
             this.SuspendLayout();
             // Initialisiere das Formular
             this.ClientSize = new System.Drawing.Size(800, 600);
-            this.Name = "MainForm";
+            this.Name = "Nahrungsnetz";
+            this.Text = "Nahrungsnetze und Populationsentwicklung";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -175,10 +155,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
         private void DrawFoodWeb(Graphics g)
         {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "testcase.json");
-
-            Database.SaveToDatabase(Names, GetsEatenBy, Eats, Quantity, EatsHowMany, FoodOrEater, path);
-
             Font font = new Font("Arial", 10);
             Brush textBrush = Brushes.Black;
             Pen linePen = new Pen(Brushes.Black, 2);
@@ -188,7 +164,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             int itemWidth = 30;
 
             int totalWidth = (layerBoundaries.Count - 1) * horizontalSpacing + itemWidth;
-            int totalHeight = Names.Count * (itemWidth + verticalSpacing) - verticalSpacing;
+            int totalHeight = data.Names.Count * (itemWidth + verticalSpacing) - verticalSpacing;
 
             int startX = Math.Max((pictureBox.ClientSize.Width - totalWidth) / 2, 0);
             int startY = Math.Max((pictureBox.ClientSize.Height - totalHeight) / 2, 0);
@@ -216,7 +192,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 for (int j = (i == 0) ? 0 : layerBoundaries[i - 1]; j < boundary; j++)
                 {
                     int index = layerIndexes[j];
-                    string currentAnimal = Names[index];
+                    string currentAnimal = data.Names[index];
 
                     int posX = startX + (i * horizontalSpacing);
                     int posY = startY;
@@ -231,11 +207,11 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             }
 
             // Zeichne Verbindungen basierend auf Fressbeziehungen
-            for (int i = 0; i < Names.Count; i++)
+            for (int i = 0; i < data.Names.Count; i++)
             {
-                string currentAnimal = Names[i];
-                string predator = GetsEatenBy[i];
-                string prey = Eats[i];
+                string currentAnimal = data.Names[i];
+                string predator = data.GetsEatenBy[i];
+                string prey = data.Eats[i];
 
                 if (!string.IsNullOrEmpty(predator) && animalPositions.ContainsKey(predator) && animalPositions.ContainsKey(currentAnimal))
                 {
