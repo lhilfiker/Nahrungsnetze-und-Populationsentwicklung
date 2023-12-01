@@ -5,6 +5,53 @@ using System.Windows.Forms;
 
 namespace Nahrungsnetze_und_Populationsentwicklung
 {
+    public partial class WelcomeForm : Form
+    {
+        public WelcomeForm()
+        {
+            InitializeComponent();
+        }
+
+        private void InitializeComponent()
+        {
+            // Initialisiere die Steuerelemente des Begrüßungsbildschirms
+            this.SuspendLayout();
+            this.ClientSize = new System.Drawing.Size(400, 300);
+            this.Name = "WelcomeForm";
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.Text = "Welcome";
+            this.Load += new EventHandler(WelcomeForm_Load);
+            this.ResumeLayout(false);
+        }
+
+        private void WelcomeForm_Load(object sender, EventArgs e)
+        {
+            // Setze die Größe und Position des Begrüßungsbildschirms
+            this.Size = new System.Drawing.Size(400, 300);
+            this.CenterToScreen(); // Zentriere das Begrüßungsfenster auf dem Bildschirm
+
+            // Erstelle einen Button für den Wechsel zum Hauptformular
+            Button switchButton = new Button();
+            switchButton.Text = "Zum Hauptformular wechseln";
+            switchButton.Size = new System.Drawing.Size(200, 30);
+            switchButton.Location = new System.Drawing.Point(100, 120);
+            switchButton.Click += SwitchButton_Click;
+
+            // Füge den Button zum Begrüßungsbildschirm hinzu
+            this.Controls.Add(switchButton);
+        }
+
+        private void SwitchButton_Click(object sender, EventArgs e)
+        {
+            // Erstelle das Hauptformular und zeige es an
+            MainForm mainForm = new MainForm();
+            mainForm.Show(); // Verwende Show(), nicht ShowDialog()
+
+            // Schließe das Begrüßungsfenster
+            this.Hide(); // Verwende Hide(), um das Begrüßungsfenster zu verbergen
+        }
+    }
+
     public partial class MainForm : Form
     {
         public List<string> Names = new List<string>
@@ -56,7 +103,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             Application.SetCompatibleTextRenderingDefault(false);
 
             MainForm mainForm = new MainForm();
-            Application.Run(mainForm);
+            Application.Run(new WelcomeForm());
         }
 
         private List<int> layerIndexes;
