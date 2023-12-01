@@ -101,6 +101,13 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         private List<int> layerIndexes;
         private List<int> layerBoundaries;
         private PictureBox pictureBox;
+        private TextBox txtName;
+        private TextBox txtIsst;
+        private TextBox txtWirdGegessenVon;
+        private CheckBox chkEssen;
+        private NumericUpDown numAnzahl;
+        private NumericUpDown numIsstWieViele;
+        private Button btnAdd;
 
         public MainForm()
         {
@@ -117,6 +124,9 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             (layerIndexes, layerBoundaries) = sortedLayers;
 
             InitializePictureBox();
+            InitializeInputFields();
+            InitializeAddButton();
+
         }
 
         private void InitializeComponent()
@@ -152,6 +162,105 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             pictureBox.Paint += PictureBox_Paint;
 
             this.Controls.Add(pictureBox);
+        }
+
+        private void InitializeInputFields()
+        {
+            // Labels erstellen
+            Label lblName = new Label();
+            lblName.Text = "Name";
+            lblName.Location = new Point(580, 50);
+            lblName.Size = new Size(70, 20);
+
+            Label lblIsst = new Label();
+            lblIsst.Text = "Isst";
+            lblIsst.Location = new Point(580, 80);
+            lblIsst.Size = new Size(70, 20);
+
+            Label lblWirdGegessenVon = new Label();
+            lblWirdGegessenVon.Text = "Wird gegessen von";
+            lblWirdGegessenVon.Location = new Point(530, 110);
+            lblWirdGegessenVon.Size = new Size(120, 20);
+
+            Label lblEssen = new Label();
+            lblEssen.Text = "Essen?";
+            lblEssen.Location = new Point(580, 140);
+            lblEssen.Size = new Size(70, 20);
+
+            Label lblAnzahl = new Label();
+            lblAnzahl.Text = "Anzahl";
+            lblAnzahl.Location = new Point(580, 170);
+            lblAnzahl.Size = new Size(70, 20);
+
+            Label lblIsstWieViele = new Label();
+            lblIsstWieViele.Text = "Isst wie viele";
+            lblIsstWieViele.Location = new Point(530, 200);
+            lblIsstWieViele.Size = new Size(120, 20);
+
+            // Textfelder und Steuerelemente erstellen
+            txtName = new TextBox();
+            txtIsst = new TextBox();
+            txtWirdGegessenVon = new TextBox();
+            chkEssen = new CheckBox();
+            numAnzahl = new NumericUpDown();
+            numIsstWieViele = new NumericUpDown();
+
+            // Positionen und Größen setzen
+            txtName.Location = new Point(650, 50);
+            txtIsst.Location = new Point(650, 80);
+            txtWirdGegessenVon.Location = new Point(650, 110);
+            chkEssen.Location = new Point(650, 140);
+            numAnzahl.Location = new Point(650, 170);
+            numIsstWieViele.Location = new Point(650, 200);
+
+            // Steuerelemente zum Formular hinzufügen
+            this.Controls.Add(lblName);
+            this.Controls.Add(lblIsst);
+            this.Controls.Add(lblWirdGegessenVon);
+            this.Controls.Add(lblEssen);
+            this.Controls.Add(lblAnzahl);
+            this.Controls.Add(lblIsstWieViele);
+
+            this.Controls.Add(txtName);
+            this.Controls.Add(txtIsst);
+            this.Controls.Add(txtWirdGegessenVon);
+            this.Controls.Add(chkEssen);
+            this.Controls.Add(numAnzahl);
+            this.Controls.Add(numIsstWieViele);
+        }
+
+
+
+        private void InitializeAddButton()
+        {
+            btnAdd = new Button();
+            btnAdd.Location = new Point(650, 230);
+            btnAdd.Size = new Size(100, 30);
+            btnAdd.Text = "Hinzufügen";
+            btnAdd.Click += new EventHandler(AddButton_Click);
+
+            this.Controls.Add(btnAdd);
+        }
+
+        private void AddButton_Click(object sender, EventArgs e)
+        {
+            string name = txtName.Text;
+            string isst = txtIsst.Text;
+            string wirdGegessenVon = txtWirdGegessenVon.Text;
+            bool essen = chkEssen.Checked;
+            int anzahl = (int)numAnzahl.Value;
+            int isstWieViele = (int)numIsstWieViele.Value;
+
+            data.Names.Add(name);
+            data.FoodOrEater.Add(essen);
+            data.Eats.Add(isst);
+            data.EatsHowMany.Add(isstWieViele);
+            data.Quantity.Add(anzahl);
+            data.GetsEatenBy.Add(wirdGegessenVon);
+
+            // TODO: Validierung
+            // Neuzeichnen des Nahrungsnetzes
+            InitializePictureBox();
         }
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
