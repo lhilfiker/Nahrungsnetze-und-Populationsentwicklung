@@ -38,6 +38,18 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             // Setze die Größe und Position des Begrüßungsbildschirms
             this.Size = new System.Drawing.Size(800, 600);
             this.CenterToScreen(); // Zentriere das Begrüßungsfenster auf dem Bildschirm
+            
+            // Background
+            Image backgroundImage = Image.FromFile("background.png");
+
+            PictureBox backgroundPictureBox = new PictureBox();
+            backgroundPictureBox.Image = backgroundImage;
+            backgroundPictureBox.Dock = DockStyle.Fill; 
+            backgroundPictureBox.SizeMode = PictureBoxSizeMode.StretchImage; 
+
+            this.Controls.Add(backgroundPictureBox);
+            this.Controls.SetChildIndex(backgroundPictureBox, 0);
+
 
             // Erstelle einen Button für den Dateiauswahldialog
             Button filePickerButton = new Button();
@@ -46,17 +58,23 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             filePickerButton.Location = new System.Drawing.Point((this.ClientSize.Width - filePickerButton.Width) / 2,
                 (this.ClientSize.Height - filePickerButton.Height) / 2);
             filePickerButton.Click += FilePickerButton_Click;
+            filePickerButton.FlatStyle = FlatStyle.Flat;
 
             Button newFolderButton = new Button();
             newFolderButton.Text = "Neues Nahrungsnetz";
             newFolderButton.Size = new System.Drawing.Size(200, 30);
             newFolderButton.Location = new System.Drawing.Point((this.ClientSize.Width - filePickerButton.Width) / 2,
-                ((this.ClientSize.Height - filePickerButton.Height) / 2) + 30); // Adjust location as needed
+                ((this.ClientSize.Height - filePickerButton.Height) / 2) + 40); // Adjust location as needed
             newFolderButton.Click += NewFolderButton_Click;
+            newFolderButton.FlatStyle = FlatStyle.Flat;
+            
 
             // Füge den Button zum Begrüßungsbildschirm hinzu
             this.Controls.Add(newFolderButton);
             this.Controls.Add(filePickerButton);
+            filePickerButton.BringToFront();
+            newFolderButton.BringToFront();
+
         }
 
         private void NewFolderButton_Click(object sender, EventArgs e)
