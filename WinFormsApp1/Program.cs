@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace Nahrungsnetze_und_Populationsentwicklung
 {
+    
     public partial class WelcomeForm : Form
     {
         public WelcomeForm()
@@ -133,6 +134,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
     public partial class MainForm : Form
     {
         [STAThread]
+        
+        
         static void Main()
         {
             Application.EnableVisualStyles();
@@ -152,6 +155,21 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         private NumericUpDown numAnzahl;
         private NumericUpDown numIsstWieViele;
         private Button btnAdd;
+        
+        public class QuizFrage
+        {
+            public string FrageText { get; set; }
+            public List<string> AntwortOptionen { get; set; }
+            public string RichtigeAntwort { get; set; }
+
+            public QuizFrage(string frageText, List<string> antwortOptionen, string richtigeAntwort)
+            {
+                FrageText = frageText;
+                AntwortOptionen = antwortOptionen;
+                RichtigeAntwort = richtigeAntwort;
+            }
+        }
+
 
         public MainForm()
         {
@@ -167,6 +185,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             InitializePictureBox();
             InitializeEditAnimalButton();
             InitializeAddAnimalButton();
+            InitializeQuizButton();
         }
 
         private void InitializeAddAnimalButton()
@@ -179,6 +198,63 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             this.Controls.Add(btnAddAnimal);
         }
+        
+        private void InitializeQuizButton()
+        {
+            Button btnQuiz = new Button();
+            btnQuiz.Text = "Quiz";
+            btnQuiz.Size = new Size(100, 30);
+            btnQuiz.Location = new Point(290, this.ClientSize.Height - 40); // Anpassen Sie die Position
+            btnQuiz.Click += new EventHandler(QuizButton_Click);
+
+            this.Controls.Add(btnQuiz);
+        }
+
+        private void QuizButton_Click(object sender, EventArgs e)
+        {
+            Form quizSettingsForm = new Form
+            {
+                Width = 300,
+                Height = 150,
+                Text = "Quiz Einstellungen"
+            };
+
+            Label lblAnzahlFragen = new Label { Text = "Anzahl Fragen:", Left = 20, Top = 20 };
+            NumericUpDown numAnzahlFragen = new NumericUpDown { Left = 150, Top = 20, Width = 100 };
+            Button btnStartQuiz = new Button { Text = "Quiz starten", Left = 50, Top = 70, Width = 100 };
+            btnStartQuiz.Click += (sender, e) =>
+            {
+                this.Hide(); // Hauptformular verstecken
+                quizSettingsForm.Hide();
+                StartQuiz((int)numAnzahlFragen.Value);
+                quizSettingsForm.Close();
+            };
+
+            quizSettingsForm.Controls.Add(lblAnzahlFragen);
+            quizSettingsForm.Controls.Add(numAnzahlFragen);
+            quizSettingsForm.Controls.Add(btnStartQuiz);
+            quizSettingsForm.ShowDialog();
+        }
+        
+        private void StartQuiz(int anzahlFragen)
+        {
+            Form quizForm = new Form
+            {
+                Width = 500,
+                Height = 400,
+                Text = "Quiz"
+            };
+
+            // Logik zum Generieren und Anzeigen von Quizfragen
+            // ...
+
+            // Ergebnisanzeige und Schließen-Button
+            // ...
+
+            quizForm.ShowDialog();
+        }
+
+
 
         private void AddAnimalButton_Click(object sender, EventArgs e)
         {
