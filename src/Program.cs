@@ -411,28 +411,38 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             Label lblQuantity = new Label { Text = "Anzahl:", Left = 20, Top = 80, Size = new Size(180, 20) };
             NumericUpDown numQuantity = new NumericUpDown { Left = 200, Top = 80, Width = 180 };
-            numQuantity.DecimalPlaces = 2;
-            numQuantity.Increment = 0.01M;
+            numQuantity.DecimalPlaces = 6;
+            numQuantity.Increment = 0.000001M;
+            numQuantity.Maximum = 9999999999999999999;
+
 
             Label lblEatsHowMany = new Label { Text = "Isst wie viele:", Left = 20, Top = 110, Size = new Size(180, 20) };
             NumericUpDown numEatsHowMany = new NumericUpDown { Left = 200, Top = 110, Width = 180 };
-            numEatsHowMany.DecimalPlaces = 2;
-            numEatsHowMany.Increment = 0.01M;
+            numEatsHowMany.DecimalPlaces = 6;
+            numEatsHowMany.Increment = 0.000001M;
+            numEatsHowMany.Maximum = 9999999999999999999;
+
 
             Label lblDeathsPerDay = new Label { Text = "Todesfälle pro Tag:", Left = 20, Top = 140, Size = new Size(180, 20) };
             NumericUpDown numDeathsPerDay = new NumericUpDown { Left = 200, Top = 140, Width = 180 };
-            numDeathsPerDay.DecimalPlaces = 2;
-            numDeathsPerDay.Increment = 0.01M;
+            numDeathsPerDay.DecimalPlaces = 6;
+            numDeathsPerDay.Increment = 0.000001M;
+            numDeathsPerDay.Maximum = 9999999999999999999;
+
 
             Label lblReplication = new Label { Text = "Replikation:", Left = 20, Top = 170, Size = new Size(180, 20) };
             NumericUpDown numReplication = new NumericUpDown { Left = 200, Top = 170, Width = 180 };
-            numReplication.DecimalPlaces = 2;
-            numReplication.Increment = 0.01M;
+            numReplication.DecimalPlaces = 6;
+            numReplication.Increment = 0.000001M;
+            numReplication.Maximum = 9999999999999999999;
+
 
             Label lblMultiplier = new Label { Text = "Multiplikator:", Left = 20, Top = 200, Size = new Size(180, 20) };
             NumericUpDown numMultiplier = new NumericUpDown { Left = 200, Top = 200, Width = 180 };
-            numMultiplier.DecimalPlaces = 2;
-            numMultiplier.Increment = 0.01M;
+            numMultiplier.DecimalPlaces = 6;
+            numMultiplier.Increment = 0.000001M;
+            numMultiplier.Maximum = 9999999999999999999;
+
 
 
             // Hinzufügen-Button im Popup
@@ -552,18 +562,37 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             Label lblQuantity = new Label { Text = "Anzahl:", Left = 20, Top = 80 };
             NumericUpDown numQuantity = new NumericUpDown { Left = 200, Top = 80, Width = 180, Value = Convert.ToDecimal(data.Quantity[index]) };
-
+            numQuantity.DecimalPlaces = 6;
+            numQuantity.Increment = 0.000001M;
+            numQuantity.Maximum = 9999999999999999999;
+            
             Label lblEatsHowMany = new Label { Text = "Isst wie viele:", Left = 20, Top = 110 };
             NumericUpDown numEatsHowMany = new NumericUpDown { Left = 200, Top = 110, Width = 180, Value = Convert.ToDecimal(data.EatsHowMany[index]) };
+            numEatsHowMany.DecimalPlaces = 6;
+            numEatsHowMany.Increment = 0.000001M;
+            numEatsHowMany.Maximum = 9999999999999999999;
 
+            
             Label lblDeathsPerDay = new Label { Text = "Todesfälle pro Tag:", Left = 20, Top = 140 };
             NumericUpDown numDeathsPerDay = new NumericUpDown { Left = 200, Top = 140, Width = 180, Value = Convert.ToDecimal(data.DeathsPerDay[index]) };
+            numDeathsPerDay.DecimalPlaces = 6;
+            numDeathsPerDay.Increment = 0.000001M;
+            numDeathsPerDay.Maximum = 9999999999999999999;
+
 
             Label lblReplication = new Label { Text = "Replikation pro Tag:", Left = 20, Top = 170 };
             NumericUpDown numReplication = new NumericUpDown { Left = 200, Top = 170, Width = 180, Value = Convert.ToDecimal(data.Replication[index]) };
+            numReplication.DecimalPlaces = 6;
+            numReplication.Increment = 0.000001M;
+            numReplication.Maximum = 9999999999999999999;
+
 
             Label lblMultiplier = new Label { Text = "Multiplikator:", Left = 20, Top = 200 };
             NumericUpDown numMultiplier = new NumericUpDown { Left = 200, Top = 200, Width = 180, Value = Convert.ToDecimal(data.Multiplier[index]) };
+            numMultiplier.DecimalPlaces = 6;
+            numMultiplier.Increment = 0.000001M;
+            numMultiplier.Maximum = 9999999999999999999;
+
 
 
             // OK und Abbrechen Buttons
