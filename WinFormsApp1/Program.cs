@@ -164,12 +164,106 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             }
 
             InitializeComponent();
-
-
             InitializePictureBox();
-            InitializeInputFields();
-            InitializeAddButton();
+            InitializeEditAnimalButton();
+            InitializeAddAnimalButton();
         }
+
+        private void InitializeAddAnimalButton()
+        {
+            Button btnAddAnimal = new Button();
+            btnAddAnimal.Text = "Neues Tier hinzufügen";
+            btnAddAnimal.Size = new Size(160, 30);
+            btnAddAnimal.Location = new Point(10, this.ClientSize.Height - 40); // Positionieren Sie den Button
+            btnAddAnimal.Click += new EventHandler(AddAnimalButton_Click);
+
+            this.Controls.Add(btnAddAnimal);
+        }
+
+        private void AddAnimalButton_Click(object sender, EventArgs e)
+        {
+            Form addForm = new Form
+            {
+                Width = 400,
+                Height = 400,
+                Text = "Neues Tier hinzufügen"
+            };
+
+            // Erstellen der Eingabefelder und Labels
+            Label lblName = new Label { Text = "Name:", Left = 20, Top = 20, Size = new Size(180, 20) };
+            TextBox txtName = new TextBox { Left = 200, Top = 20, Width = 180 };
+
+            Label lblIsst = new Label { Text = "Isst:", Left = 20, Top = 50, Size = new Size(180, 20) };
+            TextBox txtIsst = new TextBox { Left = 200, Top = 50, Width = 180 };
+
+            Label lblWirdGegessenVon = new Label
+                { Text = "Wird gegessen von:", Left = 20, Top = 80, Size = new Size(180, 20) };
+            TextBox txtWirdGegessenVon = new TextBox { Left = 200, Top = 80, Width = 180 };
+
+            Label lblAnzahl = new Label { Text = "Anzahl:", Left = 20, Top = 110, Size = new Size(180, 20) };
+            NumericUpDown numAnzahl = new NumericUpDown { Left = 200, Top = 110, Width = 180 };
+
+            Label lblIsstWieViele = new Label
+                { Text = "Isst wie viele:", Left = 20, Top = 140, Size = new Size(180, 20) };
+            NumericUpDown numIsstWieViele = new NumericUpDown { Left = 200, Top = 140, Width = 180 };
+
+            Label lblEssen = new Label { Text = "Ist Essen:", Left = 20, Top = 170, Size = new Size(180, 20) };
+            CheckBox chkEssen = new CheckBox { Left = 200, Top = 170 };
+
+            // Hinzufügen-Button im Popup
+            Button add = new Button
+                { Text = "Hinzufügen", Left = 50, Width = 100, Top = 200, DialogResult = DialogResult.OK };
+            add.Click += (sender, e) =>
+            {
+                // Logik zum Hinzufügen eines neuen Tiers
+                string name = txtName.Text;
+                string isst = txtIsst.Text;
+                string wirdGegessenVon = txtWirdGegessenVon.Text;
+                bool essen = chkEssen.Checked;
+                int anzahl = (int)numAnzahl.Value;
+                int isstWieViele = (int)numIsstWieViele.Value;
+
+                data.Names.Add(name);
+                data.FoodOrEater.Add(essen);
+                data.Eats.Add(isst);
+                data.EatsHowMany.Add(isstWieViele);
+                data.Quantity.Add(anzahl);
+                data.GetsEatenBy.Add(wirdGegessenVon);
+
+                Database.SaveToDatabase(data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany,
+                    data.FoodOrEater, data.path);
+
+                var sortedLayers =
+                    OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
+                (layerIndexes, layerBoundaries) = sortedLayers;
+                pictureBox.Invalidate();
+
+                addForm.Close();
+            };
+
+            // Abbrechen-Button im Popup
+            Button cancel = new Button
+                { Text = "Abbrechen", Left = 200, Width = 100, Top = 200, DialogResult = DialogResult.Cancel };
+            cancel.Click += (sender, e) => { addForm.Close(); };
+
+            // Fügen Sie die Steuerelemente zum Popup-Formular hinzu
+            addForm.Controls.Add(lblName);
+            addForm.Controls.Add(txtName);
+            addForm.Controls.Add(lblIsst);
+            addForm.Controls.Add(txtIsst);
+            addForm.Controls.Add(lblWirdGegessenVon);
+            addForm.Controls.Add(txtWirdGegessenVon);
+            addForm.Controls.Add(lblAnzahl);
+            addForm.Controls.Add(numAnzahl);
+            addForm.Controls.Add(lblIsstWieViele);
+            addForm.Controls.Add(numIsstWieViele);
+            addForm.Controls.Add(lblEssen);
+            addForm.Controls.Add(chkEssen);
+            addForm.Controls.Add(add);
+            addForm.Controls.Add(cancel);
+            addForm.ShowDialog();
+        }
+
 
         private void InitializeComponent()
         {
@@ -192,12 +286,103 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             DrawFoodWeb(e.Graphics);
         }
 
+        private void InitializeEditAnimalButton()
+        {
+            Button btnEditAnimal = new Button();
+            btnEditAnimal.Text = "Editiere Tier";
+            btnEditAnimal.Size = new Size(120, 30);
+            btnEditAnimal.Location = new Point(170, this.ClientSize.Height - 40); // Adjust location as needed
+            btnEditAnimal.Click += new EventHandler(EditAnimalButton_Click);
+
+            this.Controls.Add(btnEditAnimal);
+        }
+
+        private void EditAnimalButton_Click(object sender, EventArgs e)
+        {
+            string animalName =
+                Microsoft.VisualBasic.Interaction.InputBox("Gib den Namen des Tieres ein", "Tier editieren", "");
+
+            int index = data.Names.IndexOf(animalName);
+            if (index == -1)
+            {
+                MessageBox.Show("Tier nicht gefunden.", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            Form editForm = new Form
+            {
+                Width = 400,
+                Height = 400,
+                Text = "Tier editieren"
+            };
+
+            // Erstellen von Labels und Textfeldern für jedes Attribut
+            Label lblName = new Label { Text = "Name:", Left = 20, Top = 20 };
+            TextBox txtName = new TextBox { Left = 200, Top = 20, Width = 180, Text = data.Names[index] };
+
+            Label lblIsst = new Label { Text = "Isst:", Left = 20, Top = 50 };
+            TextBox txtIsst = new TextBox { Left = 200, Top = 50, Width = 180, Text = data.Eats[index] };
+
+            Label lblWirdGegessenVon = new Label { Text = "Wird gegessen von:", Left = 20, Top = 80 };
+            TextBox txtWirdGegessenVon = new TextBox
+                { Left = 200, Top = 80, Width = 180, Text = data.GetsEatenBy[index] };
+
+            Label lblAnzahl = new Label { Text = "Anzahl:", Left = 20, Top = 110 };
+            NumericUpDown numAnzahl = new NumericUpDown
+                { Left = 200, Top = 110, Width = 180, Value = Convert.ToDecimal(data.Quantity[index]) };
+
+            Label lblIsstWieViele = new Label { Text = "Isst wie viele:", Left = 20, Top = 140 };
+            NumericUpDown numIsstWieViele = new NumericUpDown
+                { Left = 200, Top = 140, Width = 180, Value = Convert.ToDecimal(data.EatsHowMany[index]) };
+
+
+            CheckBox chkEssen = new CheckBox
+                { Text = "Ist Essen", Left = 20, Top = 170, Checked = data.FoodOrEater[index] };
+
+            // OK und Abbrechen Buttons
+            Button confirmation = new Button
+                { Text = "Ok", Left = 50, Width = 100, Top = 200, DialogResult = DialogResult.OK };
+            Button cancel = new Button
+                { Text = "Abbrechen", Left = 200, Width = 100, Top = 200, DialogResult = DialogResult.Cancel };
+
+            confirmation.Click += (sender, e) =>
+            {
+                // Aktualisieren der Daten
+                data.Names[index] = txtName.Text;
+                data.Eats[index] = txtIsst.Text;
+                data.GetsEatenBy[index] = txtWirdGegessenVon.Text;
+                data.Quantity[index] = (float)numAnzahl.Value;
+                data.EatsHowMany[index] = (float)numIsstWieViele.Value;
+                data.FoodOrEater[index] = chkEssen.Checked;
+
+                Database.SaveToDatabase(data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany,
+                    data.FoodOrEater, data.path);
+
+                var sortedLayers =
+                    OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
+                (layerIndexes, layerBoundaries) = sortedLayers;
+                pictureBox.Invalidate();
+
+                editForm.Close();
+            };
+            cancel.Click += (sender, e) => { editForm.Close(); };
+
+            // Hinzufügen der Steuerelemente zum Formular
+            editForm.Controls.AddRange(new Control[]
+            {
+                lblName, txtName, lblIsst, txtIsst, lblWirdGegessenVon, txtWirdGegessenVon, lblAnzahl, numAnzahl,
+                lblIsstWieViele, numIsstWieViele, chkEssen, confirmation, cancel
+            });
+            editForm.ShowDialog();
+        }
+
+
         private void InitializePictureBox()
         {
             pictureBox = new PictureBox();
 
             // Calculate size as 80% of form's width and 90% of form's height
-            int pictureBoxWidth = (int)(this.ClientSize.Width * 0.8);
+            int pictureBoxWidth = (int)(this.ClientSize.Width * 1);
             int pictureBoxHeight = (int)(this.ClientSize.Height * 0.9);
 
             pictureBox.Size = new Size(pictureBoxWidth, pictureBoxHeight);
@@ -205,109 +390,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             pictureBox.Paint += PictureBox_Paint;
 
             this.Controls.Add(pictureBox);
-        }
-
-        private void InitializeInputFields()
-        {
-            // Labels erstellen
-            Label lblName = new Label();
-            lblName.Text = "Name";
-            lblName.Location = new Point(580, 50);
-            lblName.Size = new Size(70, 20);
-
-            Label lblIsst = new Label();
-            lblIsst.Text = "Isst";
-            lblIsst.Location = new Point(580, 80);
-            lblIsst.Size = new Size(70, 20);
-
-            Label lblWirdGegessenVon = new Label();
-            lblWirdGegessenVon.Text = "Wird gegessen von";
-            lblWirdGegessenVon.Location = new Point(530, 110);
-            lblWirdGegessenVon.Size = new Size(120, 20);
-
-            Label lblEssen = new Label();
-            lblEssen.Text = "Essen?";
-            lblEssen.Location = new Point(580, 140);
-            lblEssen.Size = new Size(70, 20);
-
-            Label lblAnzahl = new Label();
-            lblAnzahl.Text = "Anzahl";
-            lblAnzahl.Location = new Point(580, 170);
-            lblAnzahl.Size = new Size(70, 20);
-
-            Label lblIsstWieViele = new Label();
-            lblIsstWieViele.Text = "Isst wie viele";
-            lblIsstWieViele.Location = new Point(530, 200);
-            lblIsstWieViele.Size = new Size(120, 20);
-
-            // Textfelder und Steuerelemente erstellen
-            txtName = new TextBox();
-            txtIsst = new TextBox();
-            txtWirdGegessenVon = new TextBox();
-            chkEssen = new CheckBox();
-            numAnzahl = new NumericUpDown();
-            numIsstWieViele = new NumericUpDown();
-
-            // Positionen und Größen setzen
-            txtName.Location = new Point(650, 50);
-            txtIsst.Location = new Point(650, 80);
-            txtWirdGegessenVon.Location = new Point(650, 110);
-            chkEssen.Location = new Point(650, 140);
-            numAnzahl.Location = new Point(650, 170);
-            numIsstWieViele.Location = new Point(650, 200);
-
-            // Steuerelemente zum Formular hinzufügen
-            this.Controls.Add(lblName);
-            this.Controls.Add(lblIsst);
-            this.Controls.Add(lblWirdGegessenVon);
-            this.Controls.Add(lblEssen);
-            this.Controls.Add(lblAnzahl);
-            this.Controls.Add(lblIsstWieViele);
-
-            this.Controls.Add(txtName);
-            this.Controls.Add(txtIsst);
-            this.Controls.Add(txtWirdGegessenVon);
-            this.Controls.Add(chkEssen);
-            this.Controls.Add(numAnzahl);
-            this.Controls.Add(numIsstWieViele);
-        }
-
-
-        private void InitializeAddButton()
-        {
-            btnAdd = new Button();
-            btnAdd.Location = new Point(650, 230);
-            btnAdd.Size = new Size(100, 30);
-            btnAdd.Text = "Hinzufügen";
-            btnAdd.Click += new EventHandler(AddButton_Click);
-
-            this.Controls.Add(btnAdd);
-        }
-
-        private void AddButton_Click(object sender, EventArgs e)
-        {
-            string name = txtName.Text;
-            string isst = txtIsst.Text;
-            string wirdGegessenVon = txtWirdGegessenVon.Text;
-            bool essen = chkEssen.Checked;
-            int anzahl = (int)numAnzahl.Value;
-            int isstWieViele = (int)numIsstWieViele.Value;
-
-            data.Names.Add(name);
-            data.FoodOrEater.Add(essen);
-            data.Eats.Add(isst);
-            data.EatsHowMany.Add(isstWieViele);
-            data.Quantity.Add(anzahl);
-            data.GetsEatenBy.Add(wirdGegessenVon);
-
-            Database.SaveToDatabase(data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany,
-                data.FoodOrEater, data.path);
-
-            // TODO: Validierung
-            // Neuzeichnen des Nahrungsnetzes
-            var sortedLayers = OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
-            (layerIndexes, layerBoundaries) = sortedLayers;
-            pictureBox.Invalidate();
         }
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
