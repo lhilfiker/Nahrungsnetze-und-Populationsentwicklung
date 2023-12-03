@@ -22,7 +22,7 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore "Nahrungsnetz-und-Populationsentwicklung/app.resx"
+      run: dotnet restore "Nahrungsnetz-und-Populationsentwicklung/app.csproj"
     - name: Build and Publish as Self-Contained
       run: dotnet publish "Nahrungsnetz-und-Populationsentwicklung/src/app.csproj" --configuration Release --self-contained true -r win-x64 -o ./publish /p:PublishSingleFile=true
     - name: Test
