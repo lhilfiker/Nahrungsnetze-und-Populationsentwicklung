@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Resources;
@@ -40,14 +41,59 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             // Erstelle einen Button für den Dateiauswahldialog
             Button filePickerButton = new Button();
-            filePickerButton.Text = "Datei auswählen";
+            filePickerButton.Text = "Nahrungsnetz Datei auswählen";
             filePickerButton.Size = new System.Drawing.Size(200, 30);
             filePickerButton.Location = new System.Drawing.Point((this.ClientSize.Width - filePickerButton.Width) / 2, (this.ClientSize.Height - filePickerButton.Height) / 2);
             filePickerButton.Click += FilePickerButton_Click;
+            
+            Button newFolderButton = new Button();
+            newFolderButton.Text = "Neues Nahrungsnetz";
+            newFolderButton.Size = new System.Drawing.Size(200, 30);
+            newFolderButton.Location = new System.Drawing.Point((this.ClientSize.Width - filePickerButton.Width) / 2, ((this.ClientSize.Height - filePickerButton.Height) / 2) + 30); // Adjust location as needed
+            newFolderButton.Click += NewFolderButton_Click;
 
             // Füge den Button zum Begrüßungsbildschirm hinzu
+            this.Controls.Add(newFolderButton);
             this.Controls.Add(filePickerButton);
         }
+        
+        private void NewFolderButton_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+            {
+                folderBrowserDialog.Description = "Wähle einen Ordner aus";
+
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+                {
+                    // Save the selected folder path
+                    string folderPath = folderBrowserDialog.SelectedPath;
+
+                    // Prompt the user to enter the name of the food web
+                    string fileName = Microsoft.VisualBasic.Interaction.InputBox("Gib den Namen des Nahrungsnetzes ein", "Nahrungsnetz Erstellen", "MeinNahrungsnetz.json");
+
+                    if (!string.IsNullOrWhiteSpace(fileName))
+                    {
+                        // Combine the folder path and file name
+                        data.path = Path.Combine(folderPath, fileName);
+                        List<string> Names = new();
+                        List<string> GetsEatenBy = new();
+                        List<string> Eats = new();
+                        List<float> Quantity = new();
+                        List<float> EatsHowMany = new();
+                        List<bool> FoodOrEater = new();
+                        
+                        Database.SaveToDatabase(Names, GetsEatenBy, Eats, Quantity, EatsHowMany, FoodOrEater, data.path);
+                        MessageBox.Show("Eine neue Datei wurde hier erstellt: " + data.path);
+                        this.Hide(); // Hide the current form
+
+                        // Create and show the MainForm
+                        MainForm mainForm = new MainForm();
+                        mainForm.Show();
+                    }
+                }
+            }
+        }
+
 
         private void FilePickerButton_Click(object sender, EventArgs e)
         {
@@ -257,6 +303,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             data.EatsHowMany.Add(isstWieViele);
             data.Quantity.Add(anzahl);
             data.GetsEatenBy.Add(wirdGegessenVon);
+            
+            Database.SaveToDatabase(data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany, data.FoodOrEater, data.path);
 
             // TODO: Validierung
             // Neuzeichnen des Nahrungsnetzes
