@@ -504,15 +504,19 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             var sortedLayersData =
                 OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
             (var layerIndexes, var layerBoundaries) = sortedLayersData;
+            
+            int totalLayers = layerBoundaries.Count;
+            int horizontalSpacing = pictureBox.Width / (totalLayers + 1);
 
             for (int layerNumber = 1; layerNumber <= layerBoundaries.Count; layerNumber++)
             {
                 var currentLayerIndexes = OperationHelper.GetLayer(layerIndexes, layerBoundaries, layerNumber);
                 int verticalSpacing = pictureBox.Height / (currentLayerIndexes.Count + 1);
-                int posY = verticalSpacing / 2; // Start position for y
+                int posY = verticalSpacing / 2; // Startposition für y
 
-                // Calculate x position for each layer
-                int posX = (layerNumber - 1) * itemDiameter * 3 + (int)(pictureBox.Width * 0.02);
+                // Berechnen der x-Position für jede Schicht
+                int posX = layerNumber * horizontalSpacing - (itemDiameter / 2); // Zentrierung der Schicht
+
 
                 foreach (var index in currentLayerIndexes)
                 {
