@@ -68,13 +68,29 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             newFolderButton.Click += NewFolderButton_Click;
             newFolderButton.FlatStyle = FlatStyle.Flat;
             
+            Button helpButton = new Button();
+            helpButton.Text = "?";
+            helpButton.Size = new System.Drawing.Size(20, 20);
+            helpButton.Location = new System.Drawing.Point(this.ClientSize.Width - helpButton.Width, this.ClientSize.Height - helpButton.Height);
+            helpButton.Click += HelpButton_Click; // Attach event handler
+            
 
-            // Füge den Button zum Begrüßungsbildschirm hinzu
             this.Controls.Add(newFolderButton);
             this.Controls.Add(filePickerButton);
+            this.Controls.Add(helpButton);
             filePickerButton.BringToFront();
             newFolderButton.BringToFront();
+            helpButton.BringToFront();
 
+        }
+        
+        private void HelpButton_Click(object sender, EventArgs e)
+        {
+            string helpText = "Nahrungsnetz-App\n\n" +
+                              "Lizenz: Apache 2.0 (ohne Gewährleistung)\n" +
+                              "Entwickler: RebelCoderJames & bettercallmilan (Milan)\n" +
+                              "GitHub: https://github.com/RebelCoderJames/Nahrungsnetze-und-Populationsentwicklung";
+            MessageBox.Show(helpText, "Hilfeinformationen");
         }
 
         private void NewFolderButton_Click(object sender, EventArgs e)
