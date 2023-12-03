@@ -223,6 +223,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             InitializeEditAnimalButton();
             InitializeAddAnimalButton();
             InitializeQuizButton();
+            InitializeSimulateButton();
         }
 
         private void InitializeAddAnimalButton()
@@ -246,6 +247,104 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             this.Controls.Add(btnQuiz);
         }
+        
+        private void InitializeSimulateButton()
+        {
+            Button btnSimulate = new Button();
+            btnSimulate.Text = "Simulate";
+            btnSimulate.Size = new Size(100, 30);
+            btnSimulate.Location = new Point(390, this.ClientSize.Height - 40); // Anpassen Sie die Position
+            btnSimulate.Click += new EventHandler(SimulateButton_Click);
+
+            this.Controls.Add(btnSimulate);
+        }
+        
+        private void SimulateButton_Click(object sender, EventArgs e)
+        {
+            Form SimulateSettingsForm = new Form
+            {
+                Width = 300,
+                Height = 150,
+                Text = "Simulation Einstellungen"
+            };
+
+            Label lblAnzahlTage = new Label { Text = "Anzahl Tage:", Left = 20, Top = 20 };
+            NumericUpDown numAnzahlTage = new NumericUpDown { Left = 150, Top = 20, Width = 100 };
+            Button btnStartSimulation = new Button { Text = "Quiz starten", Left = 50, Top = 70, Width = 100 };
+            btnStartSimulation.Click += (sender, e) =>
+            {
+                SimulateSettingsForm.Hide();
+                StartSimulation((int)numAnzahlTage.Value);
+                SimulateSettingsForm.Close();
+            };
+
+            SimulateSettingsForm.Controls.Add(lblAnzahlTage);
+            SimulateSettingsForm.Controls.Add(numAnzahlTage);
+            SimulateSettingsForm.Controls.Add(btnStartSimulation);
+            SimulateSettingsForm.ShowDialog();
+        }
+        
+        public static void StartSimulation(int anzahlTage)
+    {
+        Form simulationForm = new Form
+        {
+            Width = 800,
+            Height = 600,
+            Text = "Simulation - " + data.Version
+        };
+
+        // Annahme: Die Simulate-Methode gibt eine Liste von float zurück
+        var simulatedResults = OperationHelper.Simulate(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication, data.Multiplier, anzahlTage);
+
+        // Erstellen einer ListView zur Anzeige der Ergebnisse
+        ListView listView = new ListView
+        {
+            View = View.Details,
+            Dock = DockStyle.Fill,
+            Columns = {
+                new ColumnHeader { Text = "Name" },
+                new ColumnHeader { Text = "Simulationsergebnis" },
+                new ColumnHeader { Text = "Veränderung" }
+            }
+        };
+
+        // Füllen der ListView mit Daten
+        for (int i = 0; i < data.Names.Count; i++)
+        {
+            var change = simulatedResults[i] - data.Quantity[i];
+            listView.Items.Add(new ListViewItem(new string[] {
+                data.Names[i],
+                simulatedResults[i].ToString("F2"),
+                change.ToString("F2")
+            }));
+        }
+
+        // Hinzufügen von Schließ- und Anwenden-Buttons
+        Button closeButton = new Button
+        {
+            Text = "Close",
+            Dock = DockStyle.Bottom
+        };
+        closeButton.Click += (sender, e) => { simulationForm.Close(); };
+
+        Button applyButton = new Button
+        {
+            Text = "Apply",
+            Dock = DockStyle.Bottom
+        };
+        applyButton.Click += (sender, e) => {
+            data.Quantity = simulatedResults; // Aktualisieren der Quantity-Liste mit den Simulationsergebnissen
+            simulationForm.Close();
+        };
+
+        // Hinzufügen der Elemente zum Formular
+        simulationForm.Controls.Add(listView);
+        simulationForm.Controls.Add(closeButton);
+        simulationForm.Controls.Add(applyButton);
+
+        // Anzeigen des Formulars
+        simulationForm.ShowDialog();
+    }
 
         private void QuizButton_Click(object sender, EventArgs e)
         {
@@ -301,6 +400,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 Height = 400,
                 Text = "Neues Tier hinzufügen"
             };
+            
 
             // Erstellen der Eingabefelder und Labels
             Label lblName = new Label { Text = "Name:", Left = 20, Top = 20, Size = new Size(180, 20) };
@@ -311,18 +411,28 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             Label lblQuantity = new Label { Text = "Anzahl:", Left = 20, Top = 80, Size = new Size(180, 20) };
             NumericUpDown numQuantity = new NumericUpDown { Left = 200, Top = 80, Width = 180 };
+            numQuantity.DecimalPlaces = 2;
+            numQuantity.Increment = 0.01M;
 
             Label lblEatsHowMany = new Label { Text = "Isst wie viele:", Left = 20, Top = 110, Size = new Size(180, 20) };
             NumericUpDown numEatsHowMany = new NumericUpDown { Left = 200, Top = 110, Width = 180 };
+            numEatsHowMany.DecimalPlaces = 2;
+            numEatsHowMany.Increment = 0.01M;
 
             Label lblDeathsPerDay = new Label { Text = "Todesfälle pro Tag:", Left = 20, Top = 140, Size = new Size(180, 20) };
             NumericUpDown numDeathsPerDay = new NumericUpDown { Left = 200, Top = 140, Width = 180 };
+            numDeathsPerDay.DecimalPlaces = 2;
+            numDeathsPerDay.Increment = 0.01M;
 
             Label lblReplication = new Label { Text = "Replikation:", Left = 20, Top = 170, Size = new Size(180, 20) };
             NumericUpDown numReplication = new NumericUpDown { Left = 200, Top = 170, Width = 180 };
+            numReplication.DecimalPlaces = 2;
+            numReplication.Increment = 0.01M;
 
             Label lblMultiplier = new Label { Text = "Multiplikator:", Left = 20, Top = 200, Size = new Size(180, 20) };
             NumericUpDown numMultiplier = new NumericUpDown { Left = 200, Top = 200, Width = 180 };
+            numMultiplier.DecimalPlaces = 2;
+            numMultiplier.Increment = 0.01M;
 
 
             // Hinzufügen-Button im Popup
