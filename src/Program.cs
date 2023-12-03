@@ -554,92 +554,83 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         }
 
         private void DrawFoodWeb(Graphics g)
+{
+    Font font = new Font("Arial", 10);
+    Brush textBrush = Brushes.Black;
+    Brush backgroundBrush = Brushes.White;
+    Pen linePen = new Pen(Brushes.Black, 2);
+    int itemDiameter = 20; // Diameter of the circle
+
+    Dictionary<string, Point> animalPositions = new Dictionary<string, Point>();
+
+    // Get sorted layer data
+    var sortedLayersData = OperationHelper.SortByLayer(data.Names, data.Eats);
+    (var layerIndexes, var layerBoundaries) = sortedLayersData;
+
+    // First, calculate and store positions of all animals
+    for (int layerNumber = 1; layerNumber <= layerBoundaries.Count; layerNumber++)
+    {
+        var currentLayerIndexes = OperationHelper.GetLayer(layerIndexes, layerBoundaries, layerNumber);
+        int verticalSpacing = pictureBox.Height / (currentLayerIndexes.Count + 1);
+        int posY = verticalSpacing / 2; // Start position for y
+        int totalLayers = layerBoundaries.Count;
+        int horizontalSpacing = pictureBox.Width / (totalLayers + 1);
+
+        // Calculate the x-Position for each layer
+        int posX = layerNumber * horizontalSpacing - (itemDiameter / 2); // Centering the layer
+
+        foreach (var index in currentLayerIndexes)
         {
-            Font font = new Font("Arial", 10);
-            Brush textBrush = Brushes.Black;
-            Pen linePen = new Pen(Brushes.Black, 2);
-            int itemDiameter = 20; // Diameter of the circle
-
-            Dictionary<string, Point> animalPositions = new Dictionary<string, Point>();
-
-            // Get sorted layer data
-            var sortedLayersData =
-                OperationHelper.SortByLayer(data.Names, data.Eats);
-            (var layerIndexes, var layerBoundaries) = sortedLayersData;
-            
-            int totalLayers = layerBoundaries.Count;
-            int horizontalSpacing = pictureBox.Width / (totalLayers + 1);
-
-            for (int layerNumber = 1; layerNumber <= layerBoundaries.Count; layerNumber++)
-            {
-                var currentLayerIndexes = OperationHelper.GetLayer(layerIndexes, layerBoundaries, layerNumber);
-                int verticalSpacing = pictureBox.Height / (currentLayerIndexes.Count + 1);
-                int posY = verticalSpacing / 2; // Startposition für y
-
-                // Berechnen der x-Position für jede Schicht
-                int posX = layerNumber * horizontalSpacing - (itemDiameter / 2); // Zentrierung der Schicht
-
-
-                foreach (var index in currentLayerIndexes)
-                {
-                    try
-                    {
-                        string currentAnimal = data.Names[index];
-                        float quantity = data.Quantity[index]; // Get the quantity of the animal
-                        int scaledItemDiameter = CalculateDiameter(quantity); // Calculate the scaled diameter
-
-                        // Draw the item with scaled diameter
-                        Rectangle drawRect = new Rectangle(posX, posY, scaledItemDiameter, scaledItemDiameter);
-                        g.FillEllipse(Brushes.Red, drawRect);
-                        g.DrawEllipse(linePen, drawRect);
-                        g.DrawString(currentAnimal, font, textBrush, posX + scaledItemDiameter + 5, posY);
-
-
-                        // Store the position for drawing connections later
-                        animalPositions[currentAnimal] = new Point(posX + itemDiameter / 2, posY + itemDiameter / 2);
-
-                        posY += verticalSpacing;
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }
-
-            // Draw connections based on feeding relationships
-            foreach (var name in data.Names)
-            {
-                try
-                {
-                    int index = data.Names.IndexOf(name);
-                    string preyList = data.Eats[index];
-
-                    if (!string.IsNullOrEmpty(preyList))
-                    {
-                        var preys = preyList.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(p => p.Trim()).ToList();
-
-                        foreach (var prey in preys)
-                        {
-                            if (animalPositions.ContainsKey(prey))
-                            {
-                                Point preyPos = animalPositions[prey];
-                                Point currentPos = animalPositions[name];
-                                g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
-                            }
-                        }
-                    }
-                }
-                catch
-                {
-
-                }
-            }
-            
-            
-
+            string currentAnimal = data.Names[index];
+            // Store the position for drawing connections later
+            animalPositions[currentAnimal] = new Point(posX + itemDiameter / 2, posY + itemDiameter / 2);
+            posY += verticalSpacing;
         }
+    }
+
+    // Then, draw connections (lines) based on feeding relationships
+    foreach (var name in data.Names)
+    {
+        int index = data.Names.IndexOf(name);
+        string preyList = data.Eats[index];
+        if (!string.IsNullOrEmpty(preyList))
+        {
+            var preys = preyList.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(p => p.Trim()).ToList();
+
+            foreach (var prey in preys)
+            {
+                if (animalPositions.ContainsKey(prey))
+                {
+                    Point preyPos = animalPositions[prey];
+                    Point currentPos = animalPositions[name];
+                    g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
+                }
+            }
+        }
+    }
+
+    // Draw dots (circles) and text within white boxes
+    foreach (var kvp in animalPositions)
+    {
+        string currentAnimal = kvp.Key;
+        Point position = kvp.Value;
+        int scaledItemDiameter = CalculateDiameter(data.Quantity[data.Names.IndexOf(currentAnimal)]); // Calculate the scaled diameter
+
+        // Draw the item (dot/circle) with scaled diameter
+        Rectangle drawRect = new Rectangle(position.X - scaledItemDiameter / 2, position.Y - scaledItemDiameter / 2, scaledItemDiameter, scaledItemDiameter);
+        g.FillEllipse(Brushes.Red, drawRect);
+        g.DrawEllipse(linePen, drawRect);
+
+        // Draw text within white boxes
+        SizeF textSize = g.MeasureString(currentAnimal, font);
+        Rectangle textRect = new Rectangle(position.X + scaledItemDiameter / 2 + 5, position.Y - (int)(textSize.Height / 2), (int)textSize.Width, (int)textSize.Height);
+        g.FillRectangle(backgroundBrush, textRect);
+        g.DrawString(currentAnimal, font, textBrush, position.X + scaledItemDiameter / 2 + 5, position.Y - (int)(textSize.Height / 2));
+    }
+}
+
+
         private int CalculateDiameter(float quantity)
         {
             // Example scaling logic (modify as needed)
