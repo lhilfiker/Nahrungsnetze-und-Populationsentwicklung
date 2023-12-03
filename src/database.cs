@@ -4,18 +4,20 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 {
     internal class Database
     {
-        public static (List<string>, List<string>, List<string>, List<float>, List<float>, List<bool>)? OpenDatabase(string filepath)
+        public static (List<string>, List<string>, List<float>, List<float>, List<float>, List<float>, List<float>)? OpenDatabase(string filepath)
         {
             //Check if file is valid
             if (!File.Exists(filepath) && Path.GetExtension(filepath) != ".json") return null;
 
             // Make the Lists
             List<string> Names = new();
-            List<string> GetsEatenBy = new();
             List<string> Eats = new();
             List<float> Quantity = new();
             List<float> EatsHowMany = new();
-            List<bool> FoodOrEater = new();
+            List<float> DeathsPerDay = new();
+            List<float> Replication  = new();
+            List<float> Multiplier  = new();
+            
             
             //Read The File
             string jsonString;
@@ -35,7 +37,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 foreach (var item in itemList)
                 {
                     if (item.Key == "name") Names.Add(item.Value.ToString());
-                    if (item.Key == "getseatenby") GetsEatenBy.Add(item.Value.ToString());
                     if (item.Key == "eats") Eats.Add(item.Value.ToString());
                     if (item.Key == "quantity") 
                     {
@@ -47,19 +48,29 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                         if (item.Value is JsonElement eatsElement)
                             EatsHowMany.Add(eatsElement.GetSingle());
                     }
-                    if (item.Key == "foodoreater") 
+                    if (item.Key == "deathsperday") 
                     {
-                        if (item.Value is JsonElement eaterElement)
-                            FoodOrEater.Add(eaterElement.GetBoolean());
+                        if (item.Value is JsonElement eatsElement)
+                            DeathsPerDay.Add(eatsElement.GetSingle());
                     }
+                    if (item.Key == "replication") 
+                    {
+                        if (item.Value is JsonElement eatsElement)
+                            Replication.Add(eatsElement.GetSingle());
+                    }
+                    if (item.Key == "multiplier") 
+                    {
+                        if (item.Value is JsonElement eatsElement)
+                            Multiplier.Add(eatsElement.GetSingle());
+                    }
+
                 }
             }
             // Return
-            return (Names, GetsEatenBy, Eats, Quantity, EatsHowMany, FoodOrEater);
+            return (Names, Eats , Quantity , EatsHowMany , DeathsPerDay , Replication, Multiplier );
         }
 
-        public static void SaveToDatabase(List<string> Names, List<string> GetsEatenBy, List<string> Eats,
-            List<float> Quantity, List<float> EatsHowMany, List<bool> FoodOrEater, string filepath)
+        public static void SaveToDatabase(List<string> Names, List<string> Eats , List<float> Quantity , List<float> EatsHowMany , List<float> DeathsPerDay , List<float> Replication , List<float> Multiplier , string filepath)
         {
             //Check if file is valid
             if (Path.GetExtension(filepath) != ".json") return;
@@ -80,11 +91,12 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 var data = new Dictionary<string, object>
                 {
                     { "name", Names[i] },
-                    { "getseatenby", GetsEatenBy[i] },
                     { "eats", Eats[i] },
                     {"quantity", Quantity[i]},
                     {"eatshowmany", EatsHowMany[i]},
-                    {"foodoreater", FoodOrEater[i]},
+                    {"deathsperday", DeathsPerDay [i]},
+                    {"replication", Replication[i]},
+                    {"multiplier", Multiplier [i]},
                 };
                 allData.Add(data);
             }
