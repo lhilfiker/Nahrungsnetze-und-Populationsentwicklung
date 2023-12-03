@@ -10,7 +10,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 {
     public partial class WelcomeForm : Form
     {
-
         public WelcomeForm()
         {
             InitializeComponent();
@@ -18,7 +17,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WelcomeForm));
+            System.ComponentModel.ComponentResourceManager resources =
+                new System.ComponentModel.ComponentResourceManager(typeof(WelcomeForm));
             this.SuspendLayout();
             // 
             // WelcomeForm
@@ -30,7 +30,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             this.Text = "Nahrungsnetze und Populationsentwicklung";
             this.Load += new System.EventHandler(this.WelcomeForm_Load);
             this.ResumeLayout(false);
-
         }
 
         private void WelcomeForm_Load(object sender, EventArgs e)
@@ -43,20 +42,22 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             Button filePickerButton = new Button();
             filePickerButton.Text = "Nahrungsnetz Datei auswählen";
             filePickerButton.Size = new System.Drawing.Size(200, 30);
-            filePickerButton.Location = new System.Drawing.Point((this.ClientSize.Width - filePickerButton.Width) / 2, (this.ClientSize.Height - filePickerButton.Height) / 2);
+            filePickerButton.Location = new System.Drawing.Point((this.ClientSize.Width - filePickerButton.Width) / 2,
+                (this.ClientSize.Height - filePickerButton.Height) / 2);
             filePickerButton.Click += FilePickerButton_Click;
-            
+
             Button newFolderButton = new Button();
             newFolderButton.Text = "Neues Nahrungsnetz";
             newFolderButton.Size = new System.Drawing.Size(200, 30);
-            newFolderButton.Location = new System.Drawing.Point((this.ClientSize.Width - filePickerButton.Width) / 2, ((this.ClientSize.Height - filePickerButton.Height) / 2) + 30); // Adjust location as needed
+            newFolderButton.Location = new System.Drawing.Point((this.ClientSize.Width - filePickerButton.Width) / 2,
+                ((this.ClientSize.Height - filePickerButton.Height) / 2) + 30); // Adjust location as needed
             newFolderButton.Click += NewFolderButton_Click;
 
             // Füge den Button zum Begrüßungsbildschirm hinzu
             this.Controls.Add(newFolderButton);
             this.Controls.Add(filePickerButton);
         }
-        
+
         private void NewFolderButton_Click(object sender, EventArgs e)
         {
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
@@ -69,7 +70,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                     string folderPath = folderBrowserDialog.SelectedPath;
 
                     // Prompt the user to enter the name of the food web
-                    string fileName = Microsoft.VisualBasic.Interaction.InputBox("Gib den Namen des Nahrungsnetzes ein", "Nahrungsnetz Erstellen", "MeinNahrungsnetz.json");
+                    string fileName = Microsoft.VisualBasic.Interaction.InputBox("Gib den Namen des Nahrungsnetzes ein",
+                        "Nahrungsnetz Erstellen", "MeinNahrungsnetz.json");
 
                     if (!string.IsNullOrWhiteSpace(fileName))
                     {
@@ -81,8 +83,9 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                         List<float> Quantity = new();
                         List<float> EatsHowMany = new();
                         List<bool> FoodOrEater = new();
-                        
-                        Database.SaveToDatabase(Names, GetsEatenBy, Eats, Quantity, EatsHowMany, FoodOrEater, data.path);
+
+                        Database.SaveToDatabase(Names, GetsEatenBy, Eats, Quantity, EatsHowMany, FoodOrEater,
+                            data.path);
                         MessageBox.Show("Eine neue Datei wurde hier erstellt: " + data.path);
                         this.Hide(); // Hide the current form
 
@@ -111,9 +114,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                     // Create and show the MainForm
                     MainForm mainForm = new MainForm();
                     mainForm.Show();
-
                 }
-
             }
         }
 
@@ -128,15 +129,12 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             this.Hide(); // Verwende Hide(), um das Begrüßungsfenster zu verbergen
         }
     }
-    
+
     public partial class MainForm : Form
     {
         [STAThread]
-        
         static void Main()
         {
-
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -161,22 +159,22 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             if (result.HasValue)
             {
                 // Assign the values from the result to the lists
-                (data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany, data.FoodOrEater) = result.Value;
+                (data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany, data.FoodOrEater) =
+                    result.Value;
             }
 
             InitializeComponent();
 
-            
 
             InitializePictureBox();
             InitializeInputFields();
             InitializeAddButton();
-
         }
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WelcomeForm));
+            System.ComponentModel.ComponentResourceManager resources =
+                new System.ComponentModel.ComponentResourceManager(typeof(WelcomeForm));
             this.SuspendLayout();
             // Initialisiere das Formular
             this.ClientSize = new System.Drawing.Size(800, 600);
@@ -201,9 +199,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             // Calculate size as 80% of form's width and 90% of form's height
             int pictureBoxWidth = (int)(this.ClientSize.Width * 0.8);
             int pictureBoxHeight = (int)(this.ClientSize.Height * 0.9);
-            
-            var sortedLayers = OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
-            (layerIndexes, layerBoundaries) = sortedLayers;
 
             pictureBox.Size = new Size(pictureBoxWidth, pictureBoxHeight);
             pictureBox.Location = new Point(0, 0); // Positioned at the top-left corner
@@ -278,7 +273,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         }
 
 
-
         private void InitializeAddButton()
         {
             btnAdd = new Button();
@@ -305,15 +299,15 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             data.EatsHowMany.Add(isstWieViele);
             data.Quantity.Add(anzahl);
             data.GetsEatenBy.Add(wirdGegessenVon);
-            
-            Database.SaveToDatabase(data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany, data.FoodOrEater, data.path);
+
+            Database.SaveToDatabase(data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany,
+                data.FoodOrEater, data.path);
 
             // TODO: Validierung
             // Neuzeichnen des Nahrungsnetzes
             var sortedLayers = OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
             (layerIndexes, layerBoundaries) = sortedLayers;
             pictureBox.Invalidate();
-
         }
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
@@ -326,65 +320,62 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             Font font = new Font("Arial", 10);
             Brush textBrush = Brushes.Black;
             Pen linePen = new Pen(Brushes.Black, 2);
-
-            // Dynamically calculate horizontal and vertical spacing
-            int horizontalSpacing = pictureBox.Width / (layerBoundaries.Count + 1);
-            int verticalSpacing = pictureBox.Height / (data.Names.Count + 1);
-            int leftMargin = (int)(pictureBox.Width * 0.02);
-            int itemWidth = 20; // Adjust as needed
+            int itemDiameter = 20; // Diameter of the circle
 
             Dictionary<string, Point> animalPositions = new Dictionary<string, Point>();
 
-            for (int i = 0; i < layerBoundaries.Count; i++)
-            {
-                int boundary = layerBoundaries[i];
-                int layerHeight = ((boundary - (i == 0 ? 0 : layerBoundaries[i - 1])) * verticalSpacing) + itemWidth;
-                int startY = (pictureBox.Height - layerHeight) / 2;
+            // Get sorted layer data
+            var sortedLayersData =
+                OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
+            (var layerIndexes, var layerBoundaries) = sortedLayersData;
 
-                for (int j = (i == 0) ? 0 : layerBoundaries[i - 1]; j < boundary; j++)
+            for (int layerNumber = 1; layerNumber <= layerBoundaries.Count; layerNumber++)
+            {
+                var currentLayerIndexes = OperationHelper.GetLayer(layerIndexes, layerBoundaries, layerNumber);
+                int verticalSpacing = pictureBox.Height / (currentLayerIndexes.Count + 1);
+                int posY = verticalSpacing / 2; // Start position for y
+
+                // Calculate x position for each layer
+                int posX = (layerNumber - 1) * itemDiameter * 3 + (int)(pictureBox.Width * 0.02);
+
+                foreach (var index in currentLayerIndexes)
                 {
-                    int index = layerIndexes[j];
                     string currentAnimal = data.Names[index];
 
-                    // Adjust posX to include the left margin
-                    int posX = leftMargin + (i * horizontalSpacing);
-                    int posY = startY;
-
                     // Draw the item
-                    g.FillEllipse(Brushes.Red, posX, posY, itemWidth, itemWidth);
-                    g.DrawString(currentAnimal, font, textBrush, posX - 10, posY - 20);
+                    Rectangle drawRect = new Rectangle(posX, posY, itemDiameter, itemDiameter);
+                    g.FillEllipse(Brushes.Red, drawRect);
+                    g.DrawEllipse(linePen, drawRect);
+                    g.DrawString(currentAnimal, font, textBrush, posX + itemDiameter + 5, posY);
 
                     // Store the position for drawing connections later
-                    animalPositions[currentAnimal] = new Point(posX + itemWidth / 2, posY + itemWidth / 2);
+                    animalPositions[currentAnimal] = new Point(posX + itemDiameter / 2, posY + itemDiameter / 2);
 
-                    // Increment startY for the next item in the same layer
-                    startY += verticalSpacing;
+                    posY += verticalSpacing;
                 }
             }
 
-
             // Draw connections based on feeding relationships
-            for (int i = 0; i < data.Names.Count; i++)
+            foreach (var name in data.Names)
             {
-                string currentAnimal = data.Names[i];
-                string predator = data.GetsEatenBy[i];
-                string prey = data.Eats[i];
+                int index = data.Names.IndexOf(name);
+                string predator = data.GetsEatenBy[index];
+                string prey = data.Eats[index];
 
-                if (!string.IsNullOrEmpty(predator) && animalPositions.ContainsKey(predator) && animalPositions.ContainsKey(currentAnimal))
+                if (!string.IsNullOrEmpty(predator) && animalPositions.ContainsKey(predator))
                 {
                     Point predatorPos = animalPositions[predator];
-                    Point currentPos = animalPositions[currentAnimal];
+                    Point currentPos = animalPositions[name];
                     g.DrawLine(linePen, predatorPos.X, predatorPos.Y, currentPos.X, currentPos.Y);
                 }
 
-                if (!string.IsNullOrEmpty(prey) && animalPositions.ContainsKey(prey) && animalPositions.ContainsKey(currentAnimal))
+                if (!string.IsNullOrEmpty(prey) && animalPositions.ContainsKey(prey))
                 {
                     Point preyPos = animalPositions[prey];
-                    Point currentPos = animalPositions[currentAnimal];
+                    Point currentPos = animalPositions[name];
                     g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
                 }
             }
         }
-
     }
 }
