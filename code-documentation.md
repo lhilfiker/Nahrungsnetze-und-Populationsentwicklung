@@ -4,16 +4,12 @@
 
 ### Variables Description
 - **Names** (`List<string>`): Stores the names of animals or food items.
-- **GetsEatenBy** (`List<string>`): Indicates the predator for each item in `Names`. An empty string signifies no predator. Limited to one item per animal currently.
-- **Eats** (`List<string>`): Lists the prey or food each animal consumes. Limited to one item per animal currently.
+- **Eats** (`List<string>`): Lists the prey or food each animal consumes. Multiple values seperated by ,
 - **Quantity** (`List<float>`): Represents the population or quantity of each item in `Names`.
 - **EatsHowMany** (`List<float>`): The amount of food each animal requires per day.
-- **FoodOrEater** (`List<bool>`): Flags whether an item is food (`true`) or an animal (`false`).
-
-### Soon to be implemented Implementations
-- Repliactes per day
-- Deads per day
-- Multiplier(like 0.56% for a 56% chance for the max deads or replicates per day)
+- **DeathsPerDay** (`List<float>`):  How many die per day
+- **Replication** (`List<float>`): Births per day
+- **Multiplier** (^(`List<float>`): (like 0.56% for a 56% chance for the max deads or replicates per day)
 
 ## Database.cs
 
