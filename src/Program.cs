@@ -583,12 +583,15 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 foreach (var index in currentLayerIndexes)
                 {
                     string currentAnimal = data.Names[index];
+                    float quantity = data.Quantity[index]; // Get the quantity of the animal
+                    int scaledItemDiameter = CalculateDiameter(quantity); // Calculate the scaled diameter
 
-                    // Draw the item
-                    Rectangle drawRect = new Rectangle(posX, posY, itemDiameter, itemDiameter);
+                    // Draw the item with scaled diameter
+                    Rectangle drawRect = new Rectangle(posX, posY, scaledItemDiameter, scaledItemDiameter);
                     g.FillEllipse(Brushes.Red, drawRect);
                     g.DrawEllipse(linePen, drawRect);
-                    g.DrawString(currentAnimal, font, textBrush, posX + itemDiameter + 5, posY);
+                    g.DrawString(currentAnimal, font, textBrush, posX + scaledItemDiameter + 5, posY);
+
 
                     // Store the position for drawing connections later
                     animalPositions[currentAnimal] = new Point(posX + itemDiameter / 2, posY + itemDiameter / 2);
@@ -619,7 +622,15 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                     }
                 }
             }
+            
+            
 
+        }
+        private int CalculateDiameter(float quantity)
+        {
+            // Example scaling logic (modify as needed)
+            int baseDiameter = 20; // Base diameter for the smallest quantity
+            return baseDiameter + (int)Math.Log(quantity + 1) * 5; // Scale diameter based on quantity
         }
     }
 }
