@@ -8,7 +8,6 @@ using System.Windows.Forms;
 
 namespace Nahrungsnetze_und_Populationsentwicklung
 {
-    
     public partial class WelcomeForm : Form
     {
         public WelcomeForm()
@@ -38,14 +37,14 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             // Setze die Größe und Position des Begrüßungsbildschirms
             this.Size = new System.Drawing.Size(800, 600);
             this.CenterToScreen(); // Zentriere das Begrüßungsfenster auf dem Bildschirm
-            
+
             // Background
             Image backgroundImage = Image.FromFile("background.png");
 
             PictureBox backgroundPictureBox = new PictureBox();
             backgroundPictureBox.Image = backgroundImage;
-            backgroundPictureBox.Dock = DockStyle.Fill; 
-            backgroundPictureBox.SizeMode = PictureBoxSizeMode.StretchImage; 
+            backgroundPictureBox.Dock = DockStyle.Fill;
+            backgroundPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
 
             this.Controls.Add(backgroundPictureBox);
             this.Controls.SetChildIndex(backgroundPictureBox, 0);
@@ -67,13 +66,14 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 ((this.ClientSize.Height - filePickerButton.Height) / 2) + 40); // Adjust location as needed
             newFolderButton.Click += NewFolderButton_Click;
             newFolderButton.FlatStyle = FlatStyle.Flat;
-            
+
             Button helpButton = new Button();
             helpButton.Text = "?";
             helpButton.Size = new System.Drawing.Size(20, 20);
-            helpButton.Location = new System.Drawing.Point(this.ClientSize.Width - helpButton.Width, this.ClientSize.Height - helpButton.Height);
+            helpButton.Location = new System.Drawing.Point(this.ClientSize.Width - helpButton.Width,
+                this.ClientSize.Height - helpButton.Height);
             helpButton.Click += HelpButton_Click; // Attach event handler
-            
+
 
             this.Controls.Add(newFolderButton);
             this.Controls.Add(filePickerButton);
@@ -81,9 +81,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             filePickerButton.BringToFront();
             newFolderButton.BringToFront();
             helpButton.BringToFront();
-
         }
-        
+
         private void HelpButton_Click(object sender, EventArgs e)
         {
             string helpText = "Nahrungsnetz-App\n\n" +
@@ -117,12 +116,13 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                         List<string> Eats = new();
                         List<float> Quantity = new();
                         List<float> EatsHowMany = new();
-                        List<float> DeathsPerDay  = new();
-                        List<float> Replication  = new();
-                        List<float> Multiplier  = new();
+                        List<float> DeathsPerDay = new();
+                        List<float> Replication = new();
+                        List<float> Multiplier = new();
 
 
-                        Database.SaveToDatabase(Names, Eats, Quantity, EatsHowMany, DeathsPerDay, Replication, Multiplier,
+                        Database.SaveToDatabase(Names, Eats, Quantity, EatsHowMany, DeathsPerDay, Replication,
+                            Multiplier,
                             data.path);
                         MessageBox.Show("Eine neue Datei wurde hier erstellt: " + data.path);
                         this.Hide(); // Hide the current form
@@ -171,8 +171,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
     public partial class MainForm : Form
     {
         [STAThread]
-        
-        
         static void Main()
         {
             Application.EnableVisualStyles();
@@ -192,7 +190,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         private NumericUpDown numAnzahl;
         private NumericUpDown numIsstWieViele;
         private Button btnAdd;
-        
+
         public class QuizFrage
         {
             public string FrageText { get; set; }
@@ -214,7 +212,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             if (result.HasValue)
             {
                 // Assign the values from the result to the lists
-                (data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication, data.Multiplier) =
+                (data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication,
+                        data.Multiplier) =
                     result.Value;
             }
 
@@ -236,7 +235,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             this.Controls.Add(btnAddAnimal);
         }
-        
+
         private void InitializeQuizButton()
         {
             Button btnQuiz = new Button();
@@ -247,7 +246,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             this.Controls.Add(btnQuiz);
         }
-        
+
         private void InitializeSimulateButton()
         {
             Button btnSimulate = new Button();
@@ -258,7 +257,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             this.Controls.Add(btnSimulate);
         }
-        
+
         private void SimulateButton_Click(object sender, EventArgs e)
         {
             Form SimulateSettingsForm = new Form
@@ -283,68 +282,72 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             SimulateSettingsForm.Controls.Add(btnStartSimulation);
             SimulateSettingsForm.ShowDialog();
         }
-        
+
         public static void StartSimulation(int anzahlTage)
-    {
-        Form simulationForm = new Form
         {
-            Width = 800,
-            Height = 600,
-            Text = "Simulation - " + data.Version
-        };
+            Form simulationForm = new Form
+            {
+                Width = 800,
+                Height = 600,
+                Text = "Simulation - " + data.Version
+            };
 
-        // Annahme: Die Simulate-Methode gibt eine Liste von float zurück
-        var simulatedResults = OperationHelper.Simulate(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication, data.Multiplier, anzahlTage);
+            // Annahme: Die Simulate-Methode gibt eine Liste von float zurück
+            var simulatedResults = OperationHelper.Simulate(data.Names, data.Eats, data.Quantity, data.EatsHowMany,
+                data.DeathsPerDay, data.Replication, data.Multiplier, anzahlTage);
 
-        // Erstellen einer ListView zur Anzeige der Ergebnisse
-        ListView listView = new ListView
-        {
-            View = View.Details,
-            Dock = DockStyle.Fill,
-            Columns = {
-                new ColumnHeader { Text = "Name" },
-                new ColumnHeader { Text = "Simulationsergebnis" },
-                new ColumnHeader { Text = "Veränderung" }
+            // Erstellen einer ListView zur Anzeige der Ergebnisse
+            ListView listView = new ListView
+            {
+                View = View.Details,
+                Dock = DockStyle.Fill,
+                Columns =
+                {
+                    new ColumnHeader { Text = "Name" },
+                    new ColumnHeader { Text = "Simulationsergebnis" },
+                    new ColumnHeader { Text = "Veränderung" }
+                }
+            };
+
+            // Füllen der ListView mit Daten
+            for (int i = 0; i < data.Names.Count; i++)
+            {
+                var change = simulatedResults[i] - data.Quantity[i];
+                listView.Items.Add(new ListViewItem(new string[]
+                {
+                    data.Names[i],
+                    simulatedResults[i].ToString("F2"),
+                    change.ToString("F2")
+                }));
             }
-        };
 
-        // Füllen der ListView mit Daten
-        for (int i = 0; i < data.Names.Count; i++)
-        {
-            var change = simulatedResults[i] - data.Quantity[i];
-            listView.Items.Add(new ListViewItem(new string[] {
-                data.Names[i],
-                simulatedResults[i].ToString("F2"),
-                change.ToString("F2")
-            }));
+            // Hinzufügen von Schließ- und Anwenden-Buttons
+            Button closeButton = new Button
+            {
+                Text = "Close",
+                Dock = DockStyle.Bottom
+            };
+            closeButton.Click += (sender, e) => { simulationForm.Close(); };
+
+            Button applyButton = new Button
+            {
+                Text = "Apply",
+                Dock = DockStyle.Bottom
+            };
+            applyButton.Click += (sender, e) =>
+            {
+                data.Quantity = simulatedResults; // Aktualisieren der Quantity-Liste mit den Simulationsergebnissen
+                simulationForm.Close();
+            };
+
+            // Hinzufügen der Elemente zum Formular
+            simulationForm.Controls.Add(listView);
+            simulationForm.Controls.Add(closeButton);
+            simulationForm.Controls.Add(applyButton);
+
+            // Anzeigen des Formulars
+            simulationForm.ShowDialog();
         }
-
-        // Hinzufügen von Schließ- und Anwenden-Buttons
-        Button closeButton = new Button
-        {
-            Text = "Close",
-            Dock = DockStyle.Bottom
-        };
-        closeButton.Click += (sender, e) => { simulationForm.Close(); };
-
-        Button applyButton = new Button
-        {
-            Text = "Apply",
-            Dock = DockStyle.Bottom
-        };
-        applyButton.Click += (sender, e) => {
-            data.Quantity = simulatedResults; // Aktualisieren der Quantity-Liste mit den Simulationsergebnissen
-            simulationForm.Close();
-        };
-
-        // Hinzufügen der Elemente zum Formular
-        simulationForm.Controls.Add(listView);
-        simulationForm.Controls.Add(closeButton);
-        simulationForm.Controls.Add(applyButton);
-
-        // Anzeigen des Formulars
-        simulationForm.ShowDialog();
-    }
 
         private void QuizButton_Click(object sender, EventArgs e)
         {
@@ -371,7 +374,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             quizSettingsForm.Controls.Add(btnStartQuiz);
             quizSettingsForm.ShowDialog();
         }
-        
+
         private void StartQuiz(int anzahlFragen)
         {
             Form quizForm = new Form
@@ -391,7 +394,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         }
 
 
-
         private void AddAnimalButton_Click(object sender, EventArgs e)
         {
             Form addForm = new Form
@@ -400,7 +402,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 Height = 400,
                 Text = "Neues Tier hinzufügen"
             };
-            
+
 
             // Erstellen der Eingabefelder und Labels
             Label lblName = new Label { Text = "Name:", Left = 20, Top = 20, Size = new Size(180, 20) };
@@ -416,14 +418,16 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             numQuantity.Maximum = 9999999999999999999;
 
 
-            Label lblEatsHowMany = new Label { Text = "Isst wie viele:", Left = 20, Top = 110, Size = new Size(180, 20) };
+            Label lblEatsHowMany = new Label
+                { Text = "Isst wie viele:", Left = 20, Top = 110, Size = new Size(180, 20) };
             NumericUpDown numEatsHowMany = new NumericUpDown { Left = 200, Top = 110, Width = 180 };
             numEatsHowMany.DecimalPlaces = 6;
             numEatsHowMany.Increment = 0.000001M;
             numEatsHowMany.Maximum = 9999999999999999999;
 
 
-            Label lblDeathsPerDay = new Label { Text = "Todesfälle pro Tag:", Left = 20, Top = 140, Size = new Size(180, 20) };
+            Label lblDeathsPerDay = new Label
+                { Text = "Todesfälle pro Tag:", Left = 20, Top = 140, Size = new Size(180, 20) };
             NumericUpDown numDeathsPerDay = new NumericUpDown { Left = 200, Top = 140, Width = 180 };
             numDeathsPerDay.DecimalPlaces = 6;
             numDeathsPerDay.Increment = 0.000001M;
@@ -444,7 +448,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             numMultiplier.Maximum = 9999999999999999999;
 
 
-
             // Hinzufügen-Button im Popup
             Button add = new Button
                 { Text = "Hinzufügen", Left = 50, Width = 100, Top = 240, DialogResult = DialogResult.OK };
@@ -457,7 +460,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 float deathsPerDay = (float)numDeathsPerDay.Value;
                 float replication = (float)numReplication.Value;
                 float multiplier = (float)numMultiplier.Value;
-                
+
                 data.Names.Add(name);
                 data.Eats.Add(eats);
                 data.Quantity.Add(quantity);
@@ -465,7 +468,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 data.DeathsPerDay.Add(deathsPerDay);
                 data.Replication.Add(replication);
                 data.Multiplier.Add(multiplier);
-                Database.SaveToDatabase(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication, data.Multiplier,
+                Database.SaveToDatabase(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay,
+                    data.Replication, data.Multiplier,
                     data.path);
 
                 var sortedLayers =
@@ -561,38 +565,42 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             TextBox txtEats = new TextBox { Left = 200, Top = 50, Width = 180, Text = data.Eats[index] };
 
             Label lblQuantity = new Label { Text = "Anzahl:", Left = 20, Top = 80 };
-            NumericUpDown numQuantity = new NumericUpDown { Left = 200, Top = 80, Width = 180, Value = Convert.ToDecimal(data.Quantity[index]) };
+            NumericUpDown numQuantity = new NumericUpDown
+                { Left = 200, Top = 80, Width = 180, Value = Convert.ToDecimal(data.Quantity[index]) };
             numQuantity.DecimalPlaces = 6;
             numQuantity.Increment = 0.000001M;
             numQuantity.Maximum = 9999999999999999999;
-            
+
             Label lblEatsHowMany = new Label { Text = "Isst wie viele:", Left = 20, Top = 110 };
-            NumericUpDown numEatsHowMany = new NumericUpDown { Left = 200, Top = 110, Width = 180, Value = Convert.ToDecimal(data.EatsHowMany[index]) };
+            NumericUpDown numEatsHowMany = new NumericUpDown
+                { Left = 200, Top = 110, Width = 180, Value = Convert.ToDecimal(data.EatsHowMany[index]) };
             numEatsHowMany.DecimalPlaces = 6;
             numEatsHowMany.Increment = 0.000001M;
             numEatsHowMany.Maximum = 9999999999999999999;
 
-            
+
             Label lblDeathsPerDay = new Label { Text = "Todesfälle pro Tag:", Left = 20, Top = 140 };
-            NumericUpDown numDeathsPerDay = new NumericUpDown { Left = 200, Top = 140, Width = 180, Value = Convert.ToDecimal(data.DeathsPerDay[index]) };
+            NumericUpDown numDeathsPerDay = new NumericUpDown
+                { Left = 200, Top = 140, Width = 180, Value = Convert.ToDecimal(data.DeathsPerDay[index]) };
             numDeathsPerDay.DecimalPlaces = 6;
             numDeathsPerDay.Increment = 0.000001M;
             numDeathsPerDay.Maximum = 9999999999999999999;
 
 
             Label lblReplication = new Label { Text = "Replikation pro Tag:", Left = 20, Top = 170 };
-            NumericUpDown numReplication = new NumericUpDown { Left = 200, Top = 170, Width = 180, Value = Convert.ToDecimal(data.Replication[index]) };
+            NumericUpDown numReplication = new NumericUpDown
+                { Left = 200, Top = 170, Width = 180, Value = Convert.ToDecimal(data.Replication[index]) };
             numReplication.DecimalPlaces = 6;
             numReplication.Increment = 0.000001M;
             numReplication.Maximum = 9999999999999999999;
 
 
             Label lblMultiplier = new Label { Text = "Multiplikator:", Left = 20, Top = 200 };
-            NumericUpDown numMultiplier = new NumericUpDown { Left = 200, Top = 200, Width = 180, Value = Convert.ToDecimal(data.Multiplier[index]) };
+            NumericUpDown numMultiplier = new NumericUpDown
+                { Left = 200, Top = 200, Width = 180, Value = Convert.ToDecimal(data.Multiplier[index]) };
             numMultiplier.DecimalPlaces = 6;
             numMultiplier.Increment = 0.000001M;
             numMultiplier.Maximum = 9999999999999999999;
-
 
 
             // OK und Abbrechen Buttons
@@ -613,7 +621,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 data.Multiplier.RemoveAt(index);
 
                 // Speichern der Änderungen in der Datenbank und Aktualisierung der Darstellung
-                Database.SaveToDatabase(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication, data.Multiplier,
+                Database.SaveToDatabase(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay,
+                    data.Replication, data.Multiplier,
                     data.path);
 
                 var sortedLayers = OperationHelper.SortByLayer(data.Names, data.Eats);
@@ -629,14 +638,15 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 // Aktualisieren der Daten
                 data.Names[index] = txtName.Text;
                 data.Eats[index] = txtEats.Text;
-                data.Quantity[index] = (float)numQuantity.Value; 
-                data.EatsHowMany[index] = (float)numEatsHowMany.Value; 
+                data.Quantity[index] = (float)numQuantity.Value;
+                data.EatsHowMany[index] = (float)numEatsHowMany.Value;
                 data.DeathsPerDay[index] = (float)numDeathsPerDay.Value;
                 data.Replication[index] = (float)numReplication.Value;
                 data.Multiplier[index] = (float)numMultiplier.Value;
 
 
-                Database.SaveToDatabase(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication, data.Multiplier,
+                Database.SaveToDatabase(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay,
+                    data.Replication, data.Multiplier,
                     data.path);
 
                 var sortedLayers =
@@ -650,8 +660,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             editForm.Controls.AddRange(new Control[]
             {
-                lblName, 
-                txtName, 
+                lblName,
+                txtName,
                 lblEats,
                 txtEats,
                 lblQuantity,
@@ -664,8 +674,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 numReplication,
                 lblMultiplier,
                 numMultiplier,
-                confirmation, 
-                cancel, 
+                confirmation,
+                cancel,
                 delete
             });
             editForm.ShowDialog();
@@ -693,89 +703,94 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         }
 
         private void DrawFoodWeb(Graphics g)
-{
-    Font font = new Font("Arial", 10);
-    Brush textBrush = Brushes.Black;
-    Brush backgroundBrush = Brushes.White;
-    Pen linePen = new Pen(Brushes.Black, 2);
-    int itemDiameter = 20; // Diameter of the circle
-
-    Dictionary<string, Point> animalPositions = new Dictionary<string, Point>();
-
-    // Get sorted layer data
-    var sortedLayersData = OperationHelper.SortByLayer(data.Names, data.Eats);
-    (var layerIndexes, var layerBoundaries) = sortedLayersData;
-
-    // First, calculate and store positions of all animals
-    for (int layerNumber = 1; layerNumber <= layerBoundaries.Count; layerNumber++)
-    {
-        var currentLayerIndexes = OperationHelper.GetLayer(layerIndexes, layerBoundaries, layerNumber);
-        int verticalSpacing = pictureBox.Height / (currentLayerIndexes.Count + 1);
-        int posY = verticalSpacing / 2; // Start position for y
-        int totalLayers = layerBoundaries.Count;
-        int horizontalSpacing = pictureBox.Width / (totalLayers + 1);
-
-        // Calculate the x-Position for each layer
-        int posX = layerNumber * horizontalSpacing - (itemDiameter / 2); // Centering the layer
-
-        foreach (var index in currentLayerIndexes)
         {
-            string currentAnimal = data.Names[index];
-            // Store the position for drawing connections later
-            animalPositions[currentAnimal] = new Point(posX + itemDiameter / 2, posY + itemDiameter / 2);
-            posY += verticalSpacing;
-        }
-    }
+            Font font = new Font("Arial", 10);
+            Brush textBrush = Brushes.Black;
+            Brush backgroundBrush = Brushes.White;
+            Pen linePen = new Pen(Brushes.Black, 2);
+            int itemDiameter = 20; // Diameter of the circle
 
-    // Then, draw connections (lines) based on feeding relationships
-    foreach (var name in data.Names)
-    {
-        int index = data.Names.IndexOf(name);
-        string preyList = data.Eats[index];
-        if (!string.IsNullOrEmpty(preyList))
-        {
-            var preys = preyList.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(p => p.Trim()).ToList();
+            Dictionary<string, Point> animalPositions = new Dictionary<string, Point>();
 
-            foreach (var prey in preys)
+            // Get sorted layer data
+            var sortedLayersData = OperationHelper.SortByLayer(data.Names, data.Eats);
+            (var layerIndexes, var layerBoundaries) = sortedLayersData;
+
+            // First, calculate and store positions of all animals
+            for (int layerNumber = 1; layerNumber <= layerBoundaries.Count; layerNumber++)
             {
-                if (animalPositions.ContainsKey(prey))
+                var currentLayerIndexes = OperationHelper.GetLayer(layerIndexes, layerBoundaries, layerNumber);
+                int verticalSpacing = pictureBox.Height / (currentLayerIndexes.Count + 1);
+                int posY = verticalSpacing / 2; // Start position for y
+                int totalLayers = layerBoundaries.Count;
+                int horizontalSpacing = pictureBox.Width / (totalLayers + 1);
+
+                // Calculate the x-Position for each layer
+                int posX = layerNumber * horizontalSpacing - (itemDiameter / 2); // Centering the layer
+
+                foreach (var index in currentLayerIndexes)
                 {
-                    Point preyPos = animalPositions[prey];
-                    Point currentPos = animalPositions[name];
-                    g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
+                    string currentAnimal = data.Names[index];
+                    // Store the position for drawing connections later
+                    animalPositions[currentAnimal] = new Point(posX + itemDiameter / 2, posY + itemDiameter / 2);
+                    posY += verticalSpacing;
                 }
             }
+
+            // Then, draw connections (lines) based on feeding relationships
+            foreach (var name in data.Names)
+            {
+                int index = data.Names.IndexOf(name);
+                string preyList = data.Eats[index];
+                if (!string.IsNullOrEmpty(preyList))
+                {
+                    var preys = preyList.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(p => p.Trim()).ToList();
+
+                    foreach (var prey in preys)
+                    {
+                        if (animalPositions.ContainsKey(prey))
+                        {
+                            Point preyPos = animalPositions[prey];
+                            Point currentPos = animalPositions[name];
+                            g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
+                        }
+                    }
+                }
+            }
+
+            // Draw dots (circles) and text within white boxes
+            foreach (var kvp in animalPositions)
+            {
+                string currentAnimal = kvp.Key;
+                Point position = kvp.Value;
+                int scaledItemDiameter =
+                    CalculateDiameter(
+                        data.Quantity[data.Names.IndexOf(currentAnimal)]); // Calculate the scaled diameter
+
+                // Draw the item (dot/circle) with scaled diameter
+                Rectangle drawRect = new Rectangle(position.X - scaledItemDiameter / 2,
+                    position.Y - scaledItemDiameter / 2, scaledItemDiameter, scaledItemDiameter);
+                if (data.Eats[data.Names.IndexOf(currentAnimal)] == "") g.FillEllipse(Brushes.Green, drawRect);
+                else g.FillEllipse(Brushes.Red, drawRect);
+                g.DrawEllipse(linePen, drawRect);
+
+                // Draw text within white boxes
+                SizeF textSize = g.MeasureString(currentAnimal, font);
+                Rectangle textRect = new Rectangle(position.X + scaledItemDiameter / 2 + 5,
+                    position.Y - (int)(textSize.Height / 2), (int)textSize.Width, (int)textSize.Height);
+                g.FillRectangle(backgroundBrush, textRect);
+                g.DrawString(currentAnimal, font, textBrush, position.X + scaledItemDiameter / 2 + 5,
+                    position.Y - (int)(textSize.Height / 2));
+            }
         }
-    }
-
-    // Draw dots (circles) and text within white boxes
-    foreach (var kvp in animalPositions)
-    {
-        string currentAnimal = kvp.Key;
-        Point position = kvp.Value;
-        int scaledItemDiameter = CalculateDiameter(data.Quantity[data.Names.IndexOf(currentAnimal)]); // Calculate the scaled diameter
-
-        // Draw the item (dot/circle) with scaled diameter
-        Rectangle drawRect = new Rectangle(position.X - scaledItemDiameter / 2, position.Y - scaledItemDiameter / 2, scaledItemDiameter, scaledItemDiameter);
-        if (data.Eats[data.Names.IndexOf(currentAnimal)] == "") g.FillEllipse(Brushes.Green, drawRect);
-        else g.FillEllipse(Brushes.Red, drawRect);
-        g.DrawEllipse(linePen, drawRect);
-
-        // Draw text within white boxes
-        SizeF textSize = g.MeasureString(currentAnimal, font);
-        Rectangle textRect = new Rectangle(position.X + scaledItemDiameter / 2 + 5, position.Y - (int)(textSize.Height / 2), (int)textSize.Width, (int)textSize.Height);
-        g.FillRectangle(backgroundBrush, textRect);
-        g.DrawString(currentAnimal, font, textBrush, position.X + scaledItemDiameter / 2 + 5, position.Y - (int)(textSize.Height / 2));
-    }
-}
 
 
         private int CalculateDiameter(float quantity)
         {
             // Example scaling logic (modify as needed)
-            int baseDiameter = 20; // Base diameter for the smallest quantity
-            return baseDiameter + (int)Math.Log(quantity + 1) * 5; // Scale diameter based on quantity
+            int baseDiameter = 2; // Base diameter for the smallest quantity
+            return baseDiameter + (int)Math.Log(quantity + 1) * 8; // Scale diameter based on quantity
         }
     }
 }
