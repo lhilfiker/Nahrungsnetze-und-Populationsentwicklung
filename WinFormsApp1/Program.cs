@@ -166,8 +166,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             InitializeComponent();
 
-            var sortedLayers = OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
-            (layerIndexes, layerBoundaries) = sortedLayers;
+            
 
             InitializePictureBox();
             InitializeInputFields();
@@ -202,6 +201,9 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             // Calculate size as 80% of form's width and 90% of form's height
             int pictureBoxWidth = (int)(this.ClientSize.Width * 0.8);
             int pictureBoxHeight = (int)(this.ClientSize.Height * 0.9);
+            
+            var sortedLayers = OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
+            (layerIndexes, layerBoundaries) = sortedLayers;
 
             pictureBox.Size = new Size(pictureBoxWidth, pictureBoxHeight);
             pictureBox.Location = new Point(0, 0); // Positioned at the top-left corner
@@ -308,7 +310,10 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             // TODO: Validierung
             // Neuzeichnen des Nahrungsnetzes
-            InitializePictureBox();
+            var sortedLayers = OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
+            (layerIndexes, layerBoundaries) = sortedLayers;
+            pictureBox.Invalidate();
+
         }
 
         private void PictureBox_Paint(object sender, PaintEventArgs e)
