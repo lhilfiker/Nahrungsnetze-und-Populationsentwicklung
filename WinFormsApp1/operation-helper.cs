@@ -8,7 +8,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
     internal class OperationHelper
     {
         public static (List<int> LayerIndexes, List<int> LayerBoundaries) SortByLayer(
-            List<string> names, List<string> getsEatenBy, List<string> eats, List<bool> foodOrEater)
+            List<string> names, List<string> eats)
         {
             List<int> layerIndexes = new List<int>();
             List<int> layerBoundaries = new List<int>();
@@ -17,7 +17,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             // First Layer - Producers or those who don't eat anything
             for (int i = 0; i < names.Count; i++)
             {
-                if (eats[i] == "" || foodOrEater[i])
+                if (eats[i] == "")
                 {
                     layerIndexes.Add(i);
                     remaining.Remove(i);
@@ -36,10 +36,9 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 foreach (int index in remaining)
                 {
                     string eatsItem = eats[index];
-                    bool isEatenByRemaining = remaining.Any(rem => getsEatenBy[rem] == names[index]);
                     bool eatsRemaining = remaining.Any(rem => eats[index] == names[rem]);
 
-                    if (eatsItem != "" && !isEatenByRemaining && !eatsRemaining)
+                    if (eatsItem != "" && !eatsRemaining)
                     {
                         // This entity eats something and is not eaten by any remaining entity,
                         // and does not eat any remaining entity

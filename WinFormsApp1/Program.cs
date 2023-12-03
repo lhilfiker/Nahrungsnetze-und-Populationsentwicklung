@@ -97,13 +97,15 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                         // Combine the folder path and file name
                         data.path = Path.Combine(folderPath, fileName);
                         List<string> Names = new();
-                        List<string> GetsEatenBy = new();
                         List<string> Eats = new();
                         List<float> Quantity = new();
                         List<float> EatsHowMany = new();
-                        List<bool> FoodOrEater = new();
+                        List<float> DeathsPerDay  = new();
+                        List<float> Replication  = new();
+                        List<float> Multiplier  = new();
 
-                        Database.SaveToDatabase(Names, GetsEatenBy, Eats, Quantity, EatsHowMany, FoodOrEater,
+
+                        Database.SaveToDatabase(Names, Eats, Quantity, EatsHowMany, DeathsPerDay, Replication, Multiplier,
                             data.path);
                         MessageBox.Show("Eine neue Datei wurde hier erstellt: " + data.path);
                         this.Hide(); // Hide the current form
@@ -195,7 +197,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             if (result.HasValue)
             {
                 // Assign the values from the result to the lists
-                (data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany, data.FoodOrEater) =
+                (data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication, data.Multiplier) =
                     result.Value;
             }
 
@@ -287,48 +289,50 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             Label lblName = new Label { Text = "Name:", Left = 20, Top = 20, Size = new Size(180, 20) };
             TextBox txtName = new TextBox { Left = 200, Top = 20, Width = 180 };
 
-            Label lblIsst = new Label { Text = "Isst:", Left = 20, Top = 50, Size = new Size(180, 20) };
-            TextBox txtIsst = new TextBox { Left = 200, Top = 50, Width = 180 };
+            Label lblEats = new Label { Text = "Isst:", Left = 20, Top = 50, Size = new Size(180, 20) };
+            TextBox txtEats = new TextBox { Left = 200, Top = 50, Width = 180 };
 
-            Label lblWirdGegessenVon = new Label
-                { Text = "Wird gegessen von:", Left = 20, Top = 80, Size = new Size(180, 20) };
-            TextBox txtWirdGegessenVon = new TextBox { Left = 200, Top = 80, Width = 180 };
+            Label lblQuantity = new Label { Text = "Anzahl:", Left = 20, Top = 80, Size = new Size(180, 20) };
+            NumericUpDown numQuantity = new NumericUpDown { Left = 200, Top = 80, Width = 180 };
 
-            Label lblAnzahl = new Label { Text = "Anzahl:", Left = 20, Top = 110, Size = new Size(180, 20) };
-            NumericUpDown numAnzahl = new NumericUpDown { Left = 200, Top = 110, Width = 180 };
+            Label lblEatsHowMany = new Label { Text = "Isst wie viele:", Left = 20, Top = 110, Size = new Size(180, 20) };
+            NumericUpDown numEatsHowMany = new NumericUpDown { Left = 200, Top = 110, Width = 180 };
 
-            Label lblIsstWieViele = new Label
-                { Text = "Isst wie viele:", Left = 20, Top = 140, Size = new Size(180, 20) };
-            NumericUpDown numIsstWieViele = new NumericUpDown { Left = 200, Top = 140, Width = 180 };
+            Label lblDeathsPerDay = new Label { Text = "Todesfälle pro Tag:", Left = 20, Top = 140, Size = new Size(180, 20) };
+            NumericUpDown numDeathsPerDay = new NumericUpDown { Left = 200, Top = 140, Width = 180 };
 
-            Label lblEssen = new Label { Text = "Ist Essen:", Left = 20, Top = 170, Size = new Size(180, 20) };
-            CheckBox chkEssen = new CheckBox { Left = 200, Top = 170 };
+            Label lblReplication = new Label { Text = "Replikation:", Left = 20, Top = 170, Size = new Size(180, 20) };
+            NumericUpDown numReplication = new NumericUpDown { Left = 200, Top = 170, Width = 180 };
+
+            Label lblMultiplier = new Label { Text = "Multiplikator:", Left = 20, Top = 200, Size = new Size(180, 20) };
+            NumericUpDown numMultiplier = new NumericUpDown { Left = 200, Top = 200, Width = 180 };
+
 
             // Hinzufügen-Button im Popup
             Button add = new Button
-                { Text = "Hinzufügen", Left = 50, Width = 100, Top = 200, DialogResult = DialogResult.OK };
+                { Text = "Hinzufügen", Left = 50, Width = 100, Top = 240, DialogResult = DialogResult.OK };
             add.Click += (sender, e) =>
             {
-                // Logik zum Hinzufügen eines neuen Tiers
                 string name = txtName.Text;
-                string isst = txtIsst.Text;
-                string wirdGegessenVon = txtWirdGegessenVon.Text;
-                bool essen = chkEssen.Checked;
-                int anzahl = (int)numAnzahl.Value;
-                int isstWieViele = (int)numIsstWieViele.Value;
-
+                string eats = txtEats.Text;
+                float quantity = (float)numQuantity.Value;
+                float eatsHowMany = (float)numEatsHowMany.Value;
+                float deathsPerDay = (float)numDeathsPerDay.Value;
+                float replication = (float)numReplication.Value;
+                float multiplier = (float)numMultiplier.Value;
+                
                 data.Names.Add(name);
-                data.FoodOrEater.Add(essen);
-                data.Eats.Add(isst);
-                data.EatsHowMany.Add(isstWieViele);
-                data.Quantity.Add(anzahl);
-                data.GetsEatenBy.Add(wirdGegessenVon);
-
-                Database.SaveToDatabase(data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany,
-                    data.FoodOrEater, data.path);
+                data.Eats.Add(eats);
+                data.Quantity.Add(quantity);
+                data.EatsHowMany.Add(eatsHowMany);
+                data.DeathsPerDay.Add(deathsPerDay);
+                data.Replication.Add(replication);
+                data.Multiplier.Add(multiplier);
+                Database.SaveToDatabase(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication, data.Multiplier,
+                    data.path);
 
                 var sortedLayers =
-                    OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
+                    OperationHelper.SortByLayer(data.Names, data.Eats);
                 (layerIndexes, layerBoundaries) = sortedLayers;
                 pictureBox.Invalidate();
 
@@ -337,22 +341,24 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             // Abbrechen-Button im Popup
             Button cancel = new Button
-                { Text = "Abbrechen", Left = 200, Width = 100, Top = 200, DialogResult = DialogResult.Cancel };
+                { Text = "Abbrechen", Left = 200, Width = 100, Top = 240, DialogResult = DialogResult.Cancel };
             cancel.Click += (sender, e) => { addForm.Close(); };
 
             // Fügen Sie die Steuerelemente zum Popup-Formular hinzu
             addForm.Controls.Add(lblName);
             addForm.Controls.Add(txtName);
-            addForm.Controls.Add(lblIsst);
-            addForm.Controls.Add(txtIsst);
-            addForm.Controls.Add(lblWirdGegessenVon);
-            addForm.Controls.Add(txtWirdGegessenVon);
-            addForm.Controls.Add(lblAnzahl);
-            addForm.Controls.Add(numAnzahl);
-            addForm.Controls.Add(lblIsstWieViele);
-            addForm.Controls.Add(numIsstWieViele);
-            addForm.Controls.Add(lblEssen);
-            addForm.Controls.Add(chkEssen);
+            addForm.Controls.Add(lblEats);
+            addForm.Controls.Add(txtEats);
+            addForm.Controls.Add(lblQuantity);
+            addForm.Controls.Add(numQuantity);
+            addForm.Controls.Add(lblEatsHowMany);
+            addForm.Controls.Add(numEatsHowMany);
+            addForm.Controls.Add(lblDeathsPerDay);
+            addForm.Controls.Add(numDeathsPerDay);
+            addForm.Controls.Add(lblReplication);
+            addForm.Controls.Add(numReplication);
+            addForm.Controls.Add(lblMultiplier);
+            addForm.Controls.Add(numMultiplier);
             addForm.Controls.Add(add);
             addForm.Controls.Add(cancel);
             addForm.ShowDialog();
@@ -395,9 +401,9 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         {
             string animalName =
                 Microsoft.VisualBasic.Interaction.InputBox("Gib den Namen des Tieres ein", "Tier editieren", "");
-
             int index = data.Names.IndexOf(animalName);
-            if (index == -1)
+
+            if (index < 0 || index >= data.Names.Count)
             {
                 MessageBox.Show("Tier nicht gefunden.", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -414,46 +420,71 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             Label lblName = new Label { Text = "Name:", Left = 20, Top = 20 };
             TextBox txtName = new TextBox { Left = 200, Top = 20, Width = 180, Text = data.Names[index] };
 
-            Label lblIsst = new Label { Text = "Isst:", Left = 20, Top = 50 };
-            TextBox txtIsst = new TextBox { Left = 200, Top = 50, Width = 180, Text = data.Eats[index] };
+            Label lblEats = new Label { Text = "Isst:", Left = 20, Top = 50 };
+            TextBox txtEats = new TextBox { Left = 200, Top = 50, Width = 180, Text = data.Eats[index] };
 
-            Label lblWirdGegessenVon = new Label { Text = "Wird gegessen von:", Left = 20, Top = 80 };
-            TextBox txtWirdGegessenVon = new TextBox
-                { Left = 200, Top = 80, Width = 180, Text = data.GetsEatenBy[index] };
+            Label lblQuantity = new Label { Text = "Anzahl:", Left = 20, Top = 80 };
+            NumericUpDown numQuantity = new NumericUpDown { Left = 200, Top = 80, Width = 180, Value = Convert.ToDecimal(data.Quantity[index]) };
 
-            Label lblAnzahl = new Label { Text = "Anzahl:", Left = 20, Top = 110 };
-            NumericUpDown numAnzahl = new NumericUpDown
-                { Left = 200, Top = 110, Width = 180, Value = Convert.ToDecimal(data.Quantity[index]) };
+            Label lblEatsHowMany = new Label { Text = "Isst wie viele:", Left = 20, Top = 110 };
+            NumericUpDown numEatsHowMany = new NumericUpDown { Left = 200, Top = 110, Width = 180, Value = Convert.ToDecimal(data.EatsHowMany[index]) };
 
-            Label lblIsstWieViele = new Label { Text = "Isst wie viele:", Left = 20, Top = 140 };
-            NumericUpDown numIsstWieViele = new NumericUpDown
-                { Left = 200, Top = 140, Width = 180, Value = Convert.ToDecimal(data.EatsHowMany[index]) };
+            Label lblDeathsPerDay = new Label { Text = "Todesfälle pro Tag:", Left = 20, Top = 140 };
+            NumericUpDown numDeathsPerDay = new NumericUpDown { Left = 200, Top = 140, Width = 180, Value = Convert.ToDecimal(data.DeathsPerDay[index]) };
 
+            Label lblReplication = new Label { Text = "Replikation pro Tag:", Left = 20, Top = 170 };
+            NumericUpDown numReplication = new NumericUpDown { Left = 200, Top = 170, Width = 180, Value = Convert.ToDecimal(data.Replication[index]) };
 
-            CheckBox chkEssen = new CheckBox
-                { Text = "Ist Essen", Left = 20, Top = 170, Checked = data.FoodOrEater[index] };
+            Label lblMultiplier = new Label { Text = "Multiplikator:", Left = 20, Top = 200 };
+            NumericUpDown numMultiplier = new NumericUpDown { Left = 200, Top = 200, Width = 180, Value = Convert.ToDecimal(data.Multiplier[index]) };
+
 
             // OK und Abbrechen Buttons
             Button confirmation = new Button
-                { Text = "Ok", Left = 50, Width = 100, Top = 200, DialogResult = DialogResult.OK };
+                { Text = "Ok", Left = 50, Width = 100, Top = 240, DialogResult = DialogResult.OK };
             Button cancel = new Button
-                { Text = "Abbrechen", Left = 200, Width = 100, Top = 200, DialogResult = DialogResult.Cancel };
+                { Text = "Abbrechen", Left = 160, Width = 100, Top = 240, DialogResult = DialogResult.Cancel };
+            Button delete = new Button { Text = "Löschen", Left = 270, Width = 100, Top = 240 };
+            delete.Click += (sender, e) =>
+            {
+                // Entfernen des Tieres aus allen Listen
+                data.Names.RemoveAt(index);
+                data.Eats.RemoveAt(index);
+                data.Quantity.RemoveAt(index);
+                data.EatsHowMany.RemoveAt(index);
+                data.DeathsPerDay.RemoveAt(index);
+                data.Replication.RemoveAt(index);
+                data.Multiplier.RemoveAt(index);
+
+                // Speichern der Änderungen in der Datenbank und Aktualisierung der Darstellung
+                Database.SaveToDatabase(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication, data.Multiplier,
+                    data.path);
+
+                var sortedLayers = OperationHelper.SortByLayer(data.Names, data.Eats);
+                (layerIndexes, layerBoundaries) = sortedLayers;
+                pictureBox.Invalidate();
+
+                editForm.Close();
+            };
+
 
             confirmation.Click += (sender, e) =>
             {
                 // Aktualisieren der Daten
                 data.Names[index] = txtName.Text;
-                data.Eats[index] = txtIsst.Text;
-                data.GetsEatenBy[index] = txtWirdGegessenVon.Text;
-                data.Quantity[index] = (float)numAnzahl.Value;
-                data.EatsHowMany[index] = (float)numIsstWieViele.Value;
-                data.FoodOrEater[index] = chkEssen.Checked;
+                data.Eats[index] = txtEats.Text;
+                data.Quantity[index] = (float)numQuantity.Value; 
+                data.EatsHowMany[index] = (float)numEatsHowMany.Value; 
+                data.DeathsPerDay[index] = (float)numDeathsPerDay.Value;
+                data.Replication[index] = (float)numReplication.Value;
+                data.Multiplier[index] = (float)numMultiplier.Value;
 
-                Database.SaveToDatabase(data.Names, data.GetsEatenBy, data.Eats, data.Quantity, data.EatsHowMany,
-                    data.FoodOrEater, data.path);
+
+                Database.SaveToDatabase(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay, data.Replication, data.Multiplier,
+                    data.path);
 
                 var sortedLayers =
-                    OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
+                    OperationHelper.SortByLayer(data.Names, data.Eats);
                 (layerIndexes, layerBoundaries) = sortedLayers;
                 pictureBox.Invalidate();
 
@@ -461,11 +492,25 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             };
             cancel.Click += (sender, e) => { editForm.Close(); };
 
-            // Hinzufügen der Steuerelemente zum Formular
             editForm.Controls.AddRange(new Control[]
             {
-                lblName, txtName, lblIsst, txtIsst, lblWirdGegessenVon, txtWirdGegessenVon, lblAnzahl, numAnzahl,
-                lblIsstWieViele, numIsstWieViele, chkEssen, confirmation, cancel
+                lblName, 
+                txtName, 
+                lblEats,
+                txtEats,
+                lblQuantity,
+                numQuantity,
+                lblEatsHowMany,
+                numEatsHowMany,
+                lblDeathsPerDay,
+                numDeathsPerDay,
+                lblReplication,
+                numReplication,
+                lblMultiplier,
+                numMultiplier,
+                confirmation, 
+                cancel, 
+                delete
             });
             editForm.ShowDialog();
         }
@@ -502,7 +547,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             // Get sorted layer data
             var sortedLayersData =
-                OperationHelper.SortByLayer(data.Names, data.GetsEatenBy, data.Eats, data.FoodOrEater);
+                OperationHelper.SortByLayer(data.Names, data.Eats);
             (var layerIndexes, var layerBoundaries) = sortedLayersData;
             
             int totalLayers = layerBoundaries.Count;
@@ -539,15 +584,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             foreach (var name in data.Names)
             {
                 int index = data.Names.IndexOf(name);
-                string predator = data.GetsEatenBy[index];
                 string prey = data.Eats[index];
-
-                if (!string.IsNullOrEmpty(predator) && animalPositions.ContainsKey(predator))
-                {
-                    Point predatorPos = animalPositions[predator];
-                    Point currentPos = animalPositions[name];
-                    g.DrawLine(linePen, predatorPos.X, predatorPos.Y, currentPos.X, currentPos.Y);
-                }
 
                 if (!string.IsNullOrEmpty(prey) && animalPositions.ContainsKey(prey))
                 {
