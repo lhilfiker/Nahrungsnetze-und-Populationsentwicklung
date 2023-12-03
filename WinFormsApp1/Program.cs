@@ -584,15 +584,25 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             foreach (var name in data.Names)
             {
                 int index = data.Names.IndexOf(name);
-                string prey = data.Eats[index];
+                string preyList = data.Eats[index];
 
-                if (!string.IsNullOrEmpty(prey) && animalPositions.ContainsKey(prey))
+                if (!string.IsNullOrEmpty(preyList))
                 {
-                    Point preyPos = animalPositions[prey];
-                    Point currentPos = animalPositions[name];
-                    g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
+                    var preys = preyList.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(p => p.Trim()).ToList();
+
+                    foreach (var prey in preys)
+                    {
+                        if (animalPositions.ContainsKey(prey))
+                        {
+                            Point preyPos = animalPositions[prey];
+                            Point currentPos = animalPositions[name];
+                            g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
+                        }
+                    }
                 }
             }
+
         }
     }
 }

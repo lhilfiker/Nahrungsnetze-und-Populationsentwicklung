@@ -17,7 +17,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             // First Layer - Producers or those who don't eat anything
             for (int i = 0; i < names.Count; i++)
             {
-                if (eats[i] == "")
+                if (string.IsNullOrEmpty(eats[i]))
                 {
                     layerIndexes.Add(i);
                     remaining.Remove(i);
@@ -35,13 +35,14 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
                 foreach (int index in remaining)
                 {
-                    string eatsItem = eats[index];
-                    bool eatsRemaining = remaining.Any(rem => eats[index] == names[rem]);
+                    var eatsList = eats[index].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                        .Select(e => e.Trim()).ToList();
 
-                    if (eatsItem != "" && !eatsRemaining)
+                    // Check if the current entity is eaten by any remaining entity or eats any remaining entity
+                    bool isEatenOrEatsRemaining = remaining.Any(rem => eatsList.Contains(names[rem]));
+
+                    if (eatsList.Any() && !isEatenOrEatsRemaining)
                     {
-                        // This entity eats something and is not eaten by any remaining entity,
-                        // and does not eat any remaining entity
                         toAdd.Add(index);
                     }
                 }
@@ -61,6 +62,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             return (layerIndexes, layerBoundaries);
         }
+
 
 
         public static List<int> GetLayer(List<int> AllItems, List<int> LayerEndings, int Layer)

@@ -48,7 +48,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                         if (item.Value is JsonElement eatsElement)
                             EatsHowMany.Add(eatsElement.GetSingle());
                     }
-                    if (item.Key == "deathsperday ") 
+                    if (item.Key == "deathsperday") 
                     {
                         if (item.Value is JsonElement eatsElement)
                             DeathsPerDay.Add(eatsElement.GetSingle());
