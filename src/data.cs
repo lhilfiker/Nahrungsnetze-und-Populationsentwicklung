@@ -8,6 +8,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 {
     public class data
     {
+        public static string Version = "v.0.1.0";
+        
         public static List<string> Names = new();
         
         public static List<string> Eats = new();

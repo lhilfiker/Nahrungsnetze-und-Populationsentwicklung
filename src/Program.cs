@@ -87,6 +87,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         private void HelpButton_Click(object sender, EventArgs e)
         {
             string helpText = "Nahrungsnetz-App\n\n" +
+                              $"Version: {data.Version}\n" +
                               "Lizenz: Apache 2.0 (ohne Gewährleistung)\n" +
                               "Entwickler: RebelCoderJames & bettercallmilan (Milan)\n" +
                               "GitHub: https://github.com/RebelCoderJames/Nahrungsnetze-und-Populationsentwicklung";
