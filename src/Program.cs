@@ -582,44 +582,58 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
                 foreach (var index in currentLayerIndexes)
                 {
-                    string currentAnimal = data.Names[index];
-                    float quantity = data.Quantity[index]; // Get the quantity of the animal
-                    int scaledItemDiameter = CalculateDiameter(quantity); // Calculate the scaled diameter
+                    try
+                    {
+                        string currentAnimal = data.Names[index];
+                        float quantity = data.Quantity[index]; // Get the quantity of the animal
+                        int scaledItemDiameter = CalculateDiameter(quantity); // Calculate the scaled diameter
 
-                    // Draw the item with scaled diameter
-                    Rectangle drawRect = new Rectangle(posX, posY, scaledItemDiameter, scaledItemDiameter);
-                    g.FillEllipse(Brushes.Red, drawRect);
-                    g.DrawEllipse(linePen, drawRect);
-                    g.DrawString(currentAnimal, font, textBrush, posX + scaledItemDiameter + 5, posY);
+                        // Draw the item with scaled diameter
+                        Rectangle drawRect = new Rectangle(posX, posY, scaledItemDiameter, scaledItemDiameter);
+                        g.FillEllipse(Brushes.Red, drawRect);
+                        g.DrawEllipse(linePen, drawRect);
+                        g.DrawString(currentAnimal, font, textBrush, posX + scaledItemDiameter + 5, posY);
 
 
-                    // Store the position for drawing connections later
-                    animalPositions[currentAnimal] = new Point(posX + itemDiameter / 2, posY + itemDiameter / 2);
+                        // Store the position for drawing connections later
+                        animalPositions[currentAnimal] = new Point(posX + itemDiameter / 2, posY + itemDiameter / 2);
 
-                    posY += verticalSpacing;
+                        posY += verticalSpacing;
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
 
             // Draw connections based on feeding relationships
             foreach (var name in data.Names)
             {
-                int index = data.Names.IndexOf(name);
-                string preyList = data.Eats[index];
-
-                if (!string.IsNullOrEmpty(preyList))
+                try
                 {
-                    var preys = preyList.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(p => p.Trim()).ToList();
+                    int index = data.Names.IndexOf(name);
+                    string preyList = data.Eats[index];
 
-                    foreach (var prey in preys)
+                    if (!string.IsNullOrEmpty(preyList))
                     {
-                        if (animalPositions.ContainsKey(prey))
+                        var preys = preyList.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(p => p.Trim()).ToList();
+
+                        foreach (var prey in preys)
                         {
-                            Point preyPos = animalPositions[prey];
-                            Point currentPos = animalPositions[name];
-                            g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
+                            if (animalPositions.ContainsKey(prey))
+                            {
+                                Point preyPos = animalPositions[prey];
+                                Point currentPos = animalPositions[name];
+                                g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
+                            }
                         }
                     }
+                }
+                catch
+                {
+
                 }
             }
             
