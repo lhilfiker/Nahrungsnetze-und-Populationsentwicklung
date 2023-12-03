@@ -619,7 +619,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
         // Draw the item (dot/circle) with scaled diameter
         Rectangle drawRect = new Rectangle(position.X - scaledItemDiameter / 2, position.Y - scaledItemDiameter / 2, scaledItemDiameter, scaledItemDiameter);
-        g.FillEllipse(Brushes.Red, drawRect);
+        if (data.Eats[data.Names.IndexOf(currentAnimal)] == "") g.FillEllipse(Brushes.Green, drawRect);
+        else g.FillEllipse(Brushes.Red, drawRect);
         g.DrawEllipse(linePen, drawRect);
 
         // Draw text within white boxes
