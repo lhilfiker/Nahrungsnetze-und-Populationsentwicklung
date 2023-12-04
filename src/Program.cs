@@ -269,7 +269,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             Label lblAnzahlTage = new Label { Text = "Anzahl Tage:", Left = 20, Top = 20 };
             NumericUpDown numAnzahlTage = new NumericUpDown { Left = 150, Top = 20, Width = 100 };
-            Button btnStartSimulation = new Button { Text = "Quiz starten", Left = 50, Top = 70, Width = 100 };
+            Button btnStartSimulation = new Button { Text = "Simulation starten", Left = 50, Top = 70, Width = 100 };
             btnStartSimulation.Click += (sender, e) =>
             {
                 SimulateSettingsForm.Hide();
