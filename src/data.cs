@@ -24,6 +24,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
         public static List<float> Multiplier  = new();
 
+        public static string ShowSelection = "Anzahl";
+
         
         public static string path;
     }

@@ -190,6 +190,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         private NumericUpDown numAnzahl;
         private NumericUpDown numIsstWieViele;
         private Button btnAdd;
+        private ComboBox viewModeComboBox;
+
 
         public class QuizFrage
         {
@@ -223,6 +225,32 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             InitializeAddAnimalButton();
             InitializeQuizButton();
             InitializeSimulateButton();
+            InitializeViewModeComboBox();
+        }
+        
+        private void InitializeViewModeComboBox()
+        {
+            viewModeComboBox = new ComboBox();
+            viewModeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            viewModeComboBox.Size = new Size(120, 30);
+            viewModeComboBox.Location = new Point(500, this.ClientSize.Height - 35);
+
+            // Add view modes
+            viewModeComboBox.Items.AddRange(new string[] {"Anzahl", "IsstWieViel", "TodeProTag", "Replikation", "Multiplier"});
+            viewModeComboBox.SelectedIndex = 0; // Set default to "Anzahl"
+
+            // Event handler for selection change
+            viewModeComboBox.SelectedIndexChanged += ViewModeComboBox_SelectedIndexChanged;
+
+            this.Controls.Add(viewModeComboBox);
+        }
+
+        private void ViewModeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Save the selected view mode to data.ShowSelection
+            data.ShowSelection = viewModeComboBox.SelectedItem.ToString();
+            pictureBox.Invalidate();
+            
         }
 
         private void InitializeAddAnimalButton()
@@ -789,7 +817,12 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                     position.Y - (int)(textSize.Height / 2));
 
                 // Draw quantity inside the circle
-                string quantityText = data.Quantity[data.Names.IndexOf(currentAnimal)].ToString();
+                string quantityText = "";
+                if (data.ShowSelection == "Anzahl") quantityText = data.Quantity[data.Names.IndexOf(currentAnimal)].ToString();
+                if (data.ShowSelection == "IsstWieViel") quantityText = data.EatsHowMany[data.Names.IndexOf(currentAnimal)].ToString();
+                if (data.ShowSelection == "TodeProTag") quantityText = data.DeathsPerDay[data.Names.IndexOf(currentAnimal)].ToString();
+                if (data.ShowSelection == "Replikation") quantityText = data.Replication[data.Names.IndexOf(currentAnimal)].ToString();
+                if (data.ShowSelection == "Multiplier") quantityText = data.Multiplier[data.Names.IndexOf(currentAnimal)].ToString();
                 SizeF quantityTextSize = g.MeasureString(quantityText, font);
                 PointF quantityTextPosition = new PointF(
                     position.X - (quantityTextSize.Width / 2), 
@@ -803,7 +836,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         private int CalculateDiameter(float quantity)
         {
             // Example scaling logic (modify as needed)
-            int baseDiameter = 2; // Base diameter for the smallest quantity
+            int baseDiameter = 10; // Base diameter for the smallest quantity
             return baseDiameter + (int)Math.Log(quantity + 1) * 8; // Scale diameter based on quantity
         }
     }
