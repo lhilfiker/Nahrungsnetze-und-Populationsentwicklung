@@ -128,72 +128,89 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
         private static Random random = new Random();
 
-        public static List<float> Simulate(List<string> names, List<string> eats, List<float> quantity,
-            List<float> eatsHowMany, List<float> deathsPerDay, List<float> replication, List<float> multiplier,
-            int days)
+        public class SpeciesData
         {
-            Dictionary<string, float> population = new Dictionary<string, float>();
+            public string Name { get; set; }
+            public List<float> DailyPopulations { get; set; }
+
+            public SpeciesData(string name)
+            {
+                Name = name;
+                DailyPopulations = new List<float>();
+            }
+        }
+
+        public static (List<float>, List<SpeciesData>) Simulate(List<string> names, List<string> eats, List<float> quantity,
+        List<float> eatsHowMany, List<float> deathsPerDay, List<float> replication, List<float> multiplier,
+        int days)
+    {
+        Dictionary<string, float> population = new Dictionary<string, float>();
+        List<SpeciesData> allSpeciesData = names.Select(name => new SpeciesData(name)).ToList();
+
+        for (int i = 0; i < names.Count; i++)
+        {
+            population[names[i]] = quantity[i];
+        }
+
+        Random random = new Random();
+
+        for (int day = 0; day < days; day++)
+        {
+            Dictionary<string, float> newPopulation = new Dictionary<string, float>(population);
+
             for (int i = 0; i < names.Count; i++)
             {
-                population[names[i]] = quantity[i];
-            }
+                string species = names[i];
+                float currentPopulation = population[species];
+                float birthRate = replication[i];
+                float deathRate = deathsPerDay[i];
+                float variationMultiplier = multiplier[i];
 
-            for (int day = 0; day < days; day++)
-            {
-                Dictionary<string, float> newPopulation = new Dictionary<string, float>(population);
+                // Calculate probability for the event
+                float probability = CalculateProbability(variationMultiplier);
 
-                for (int i = 0; i < names.Count; i++)
+                if (!string.IsNullOrEmpty(eats[i]) && population.ContainsKey(eats[i]))
                 {
-                    string species = names[i];
-                    float currentPopulation = population[species];
-                    float birthRate = replication[i];
-                    float deathRate = deathsPerDay[i];
-                    float variationMultiplier = multiplier[i];
-
-                    // Wahrscheinlichkeit für das Ereignis berechnen
-                    float probability = CalculateProbability(variationMultiplier);
-
-                    if (!string.IsNullOrEmpty(eats[i]) && population.ContainsKey(eats[i]))
-                    {
-                        float availableFood = population[eats[i]];
-                        float foodConsumed = Math.Min(eatsHowMany[i], availableFood);
-                        if (random.NextDouble() < probability)
-                        {
-                            // Nahrungsaufnahme und Fortpflanzung
-                            float reproductionRate = (foodConsumed / eatsHowMany[i]) * birthRate;
-                            newPopulation[eats[i]] -= foodConsumed;
-                            newPopulation[species] += reproductionRate * currentPopulation;
-                        }
-                    }
-                    else
-                    {
-                        if (random.NextDouble() < probability)
-                        {
-                            // Fortpflanzung für Produzenten
-                            newPopulation[species] += birthRate * currentPopulation;
-                        }
-                    }
-
+                    float availableFood = population[eats[i]];
+                    float foodConsumed = Math.Min(eatsHowMany[i], availableFood);
                     if (random.NextDouble() < probability)
                     {
-                        // Tod
-                        newPopulation[species] -= deathRate * currentPopulation;
+                        // Food consumption and reproduction
+                        float reproductionRate = (foodConsumed / eatsHowMany[i]) * birthRate;
+                        newPopulation[eats[i]] -= foodConsumed;
+                        newPopulation[species] += reproductionRate * currentPopulation;
                     }
-
-                    newPopulation[species] = Math.Max(0, newPopulation[species]);
+                }
+                else
+                {
+                    if (random.NextDouble() < probability)
+                    {
+                        // Reproduction for producers
+                        newPopulation[species] += birthRate * currentPopulation;
+                    }
                 }
 
-                population = newPopulation;
+                if (random.NextDouble() < probability)
+                {
+                    // Death
+                    newPopulation[species] -= deathRate * currentPopulation;
+                }
+
+                newPopulation[species] = Math.Max(0, newPopulation[species]);
             }
 
-            List<float> finalQuantities = new List<float>();
-            foreach (var species in names)
+            // Update daily data for eac h species
+            for (int i = 0; i < names.Count; i++)
             {
-                finalQuantities.Add(population[species]);
+                allSpeciesData[i].DailyPopulations.Add(newPopulation[names[i]]);
             }
 
-            return finalQuantities;
+            population = new Dictionary<string, float>(newPopulation);
         }
+
+        List<float> finalPopulations = population.Values.ToList();
+        return (finalPopulations, allSpeciesData);
+    }
 
         private static float CalculateProbability(float multiplier)
         {

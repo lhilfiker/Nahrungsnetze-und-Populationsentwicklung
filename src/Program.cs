@@ -6,6 +6,9 @@ using System.IO;
 using System.Reflection.Metadata;
 using System.Resources;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Data.SqlClient;
 
 namespace Nahrungsnetze_und_Populationsentwicklung
 {
@@ -228,7 +231,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             InitializeSimulateButton();
             InitializeViewModeComboBox();
         }
-        
+
         private void InitializeViewModeComboBox()
         {
             viewModeComboBox = new ComboBox();
@@ -237,7 +240,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             viewModeComboBox.Location = new Point(495, this.ClientSize.Height - 37);
 
             // Add view modes
-            viewModeComboBox.Items.AddRange(new string[] {"Anzahl", "IsstWieViel", "TodeProTag", "Replikation", "Multiplier"});
+            viewModeComboBox.Items.AddRange(new string[]
+                { "Anzahl", "IsstWieViel", "TodeProTag", "Replikation", "Multiplier" });
             viewModeComboBox.SelectedIndex = 0; // Set default to "Anzahl"
 
             // Event handler for selection change
@@ -251,7 +255,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             // Save the selected view mode to data.ShowSelection
             data.ShowSelection = viewModeComboBox.SelectedItem.ToString();
             pictureBox.Invalidate();
-            
         }
 
         private void InitializeAddAnimalButton()
@@ -320,14 +323,16 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 Height = 600,
                 Text = "Simulation - " + data.Version
             };
-            
-            var simulatedResults = OperationHelper.Simulate(data.Names, data.Eats, data.Quantity, data.EatsHowMany,
+
+            var (finalPopulations, allSpeciesData) = OperationHelper.Simulate(data.Names, data.Eats, data.Quantity,
+                data.EatsHowMany,
                 data.DeathsPerDay, data.Replication, data.Multiplier, anzahlTage);
 
             ListView listView = new ListView
             {
                 View = View.Details,
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Bottom,
+                Height = 200
             };
 
             listView.Columns.Add(new ColumnHeader { Text = "Name", Width = 300 });
@@ -336,15 +341,15 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             for (int i = 0; i < data.Names.Count; i++)
             {
-                var change = simulatedResults[i] - data.Quantity[i];
+                var change = finalPopulations[i] - data.Quantity[i];
                 listView.Items.Add(new ListViewItem(new string[]
                 {
                     data.Names[i],
-                    simulatedResults[i].ToString("F2"),
+                    finalPopulations[i].ToString("F2"),
                     change.ToString("F2")
                 }));
             }
-            
+
             simulationForm.Resize += (sender, e) =>
             {
                 int totalColumnWidth = listView.Width - 4;
@@ -355,7 +360,80 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 }
             };
 
-            // Hinzufügen von Schließ- und Anwenden-Buttons
+            // ComboBox for selecting species
+            ComboBox speciesComboBox = new ComboBox
+            {
+                Dock = DockStyle.Top
+            };
+            speciesComboBox.Items.Add("All Animals");
+            speciesComboBox.Items.AddRange(data.Names.ToArray());
+            speciesComboBox.SelectedIndex = 0;
+
+            // Chart for displaying population data
+            Chart populationChart = new Chart
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.LightGray
+            };
+            ChartArea chartArea = new ChartArea();
+            populationChart.ChartAreas.Add(chartArea);
+
+            // Method to update the chart based on the selected species
+            void UpdateChart(string selectedSpecies)
+            {
+                populationChart.Series.Clear();
+                Series series = new Series
+                {
+                    ChartType = SeriesChartType.Line,
+                    BorderWidth = 3 // Makes the line bolder
+                };
+
+                float maxYValue = float.MinValue;
+                float minYValue = float.MaxValue;
+
+                if (selectedSpecies == "All Animals")
+                {
+                    for (int day = 0; day < anzahlTage; day++)
+                    {
+                        float totalPopulation = allSpeciesData.Sum(species => species.DailyPopulations[day]);
+                        series.Points.AddXY(day + 1, totalPopulation);
+                        maxYValue = Math.Max(maxYValue, totalPopulation);
+                        minYValue = Math.Min(minYValue, totalPopulation);
+                    }
+                }
+                else
+                {
+                    var speciesData = allSpeciesData.FirstOrDefault(species => species.Name == selectedSpecies);
+                    if (speciesData != null)
+                    {
+                        for (int day = 0; day < speciesData.DailyPopulations.Count; day++)
+                        {
+                            float population = speciesData.DailyPopulations[day];
+                            series.Points.AddXY(day + 1, population);
+                            maxYValue = Math.Max(maxYValue, population);
+                            minYValue = Math.Min(minYValue, population);
+                        }
+                    }
+                }
+
+                populationChart.Series.Add(series);
+
+                // Set the Y-axis maximum and minimum
+                populationChart.ChartAreas[0].AxisY.Maximum = maxYValue;
+                populationChart.ChartAreas[0].AxisY.Minimum = minYValue > 0 ? 0 : minYValue;
+                populationChart.ChartAreas[0].AxisY.IsStartedFromZero = false;
+            }
+
+
+
+            // Event handler for ComboBox selection change
+            speciesComboBox.SelectedIndexChanged += (sender, e) =>
+            {
+                string selectedSpecies = speciesComboBox.SelectedItem.ToString();
+                UpdateChart(selectedSpecies);
+            };
+
+            // Close and Apply Buttons
             Button closeButton = new Button
             {
                 Text = "Close",
@@ -370,16 +448,21 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             };
             applyButton.Click += (sender, e) =>
             {
-                data.Quantity = simulatedResults; // Aktualisieren der Quantity-Liste mit den Simulationsergebnissen
+                data.Quantity = finalPopulations; // Update the Quantity list with the simulation results
                 simulationForm.Close();
             };
 
-            // Hinzufügen der Elemente zum Formular
+            // Adding controls to the form
+            simulationForm.Controls.Add(populationChart);
+            simulationForm.Controls.Add(speciesComboBox);
             simulationForm.Controls.Add(listView);
             simulationForm.Controls.Add(closeButton);
             simulationForm.Controls.Add(applyButton);
 
-            // Anzeigen des Formulars
+            // Initial chart update with the first selection
+            UpdateChart(speciesComboBox.SelectedItem.ToString());
+
+            // Display the form
             simulationForm.ShowDialog();
         }
 
@@ -796,7 +879,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
                             using (Pen linePen2 = new Pen(Color.Black, 2))
                             {
-                                var arrow = new System.Drawing.Drawing2D.AdjustableArrowCap(3, 4); 
+                                var arrow = new System.Drawing.Drawing2D.AdjustableArrowCap(3, 4);
                                 linePen2.CustomEndCap = arrow;
 
                                 g.DrawLine(linePen2, preyPos.X, preyPos.Y, adjustedCurrentPos.X, adjustedCurrentPos.Y);
@@ -833,16 +916,21 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
                 // Draw quantity inside the circle
                 string quantityText = "";
-                if (data.ShowSelection == "Anzahl") quantityText = data.Quantity[data.Names.IndexOf(currentAnimal)].ToString();
-                if (data.ShowSelection == "IsstWieViel") quantityText = data.EatsHowMany[data.Names.IndexOf(currentAnimal)].ToString();
-                if (data.ShowSelection == "TodeProTag") quantityText = data.DeathsPerDay[data.Names.IndexOf(currentAnimal)].ToString();
-                if (data.ShowSelection == "Replikation") quantityText = data.Replication[data.Names.IndexOf(currentAnimal)].ToString();
-                if (data.ShowSelection == "Multiplier") quantityText = data.Multiplier[data.Names.IndexOf(currentAnimal)].ToString();
+                if (data.ShowSelection == "Anzahl")
+                    quantityText = data.Quantity[data.Names.IndexOf(currentAnimal)].ToString();
+                if (data.ShowSelection == "IsstWieViel")
+                    quantityText = data.EatsHowMany[data.Names.IndexOf(currentAnimal)].ToString();
+                if (data.ShowSelection == "TodeProTag")
+                    quantityText = data.DeathsPerDay[data.Names.IndexOf(currentAnimal)].ToString();
+                if (data.ShowSelection == "Replikation")
+                    quantityText = data.Replication[data.Names.IndexOf(currentAnimal)].ToString();
+                if (data.ShowSelection == "Multiplier")
+                    quantityText = data.Multiplier[data.Names.IndexOf(currentAnimal)].ToString();
                 SizeF quantityTextSize = g.MeasureString(quantityText, font);
                 PointF quantityTextPosition = new PointF(
-                    position.X - (quantityTextSize.Width / 2), 
+                    position.X - (quantityTextSize.Width / 2),
                     position.Y - (quantityTextSize.Height / 2));
-        
+
                 g.DrawString(quantityText, font, Brushes.Black, quantityTextPosition);
             }
         }
@@ -854,7 +942,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             int baseDiameter = 15; // Base diameter for the smallest quantity
             return baseDiameter + (int)Math.Log(quantity + 1) * 8; // Scale diameter based on quantity
         }
-        
+
         private Point AdjustLineEndPoint(Point start, Point end, int radius)
         {
             double angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
