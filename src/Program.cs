@@ -291,8 +291,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 Height = 600,
                 Text = "Simulation - " + data.Version
             };
-
-            // Annahme: Die Simulate-Methode gibt eine Liste von float zurück
+            
             var simulatedResults = OperationHelper.Simulate(data.Names, data.Eats, data.Quantity, data.EatsHowMany,
                 data.DeathsPerDay, data.Replication, data.Multiplier, anzahlTage);
 
@@ -781,13 +780,22 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 else g.FillEllipse(Brushes.Red, drawRect);
                 g.DrawEllipse(linePen, drawRect);
 
-                // Draw text within white boxes
+                // Draw text outside the circle
                 SizeF textSize = g.MeasureString(currentAnimal, font);
                 Rectangle textRect = new Rectangle(position.X + scaledItemDiameter / 2 + 5,
                     position.Y - (int)(textSize.Height / 2), (int)textSize.Width, (int)textSize.Height);
                 g.FillRectangle(backgroundBrush, textRect);
                 g.DrawString(currentAnimal, font, textBrush, position.X + scaledItemDiameter / 2 + 5,
                     position.Y - (int)(textSize.Height / 2));
+
+                // Draw quantity inside the circle
+                string quantityText = data.Quantity[data.Names.IndexOf(currentAnimal)].ToString();
+                SizeF quantityTextSize = g.MeasureString(quantityText, font);
+                PointF quantityTextPosition = new PointF(
+                    position.X - (quantityTextSize.Width / 2), 
+                    position.Y - (quantityTextSize.Height / 2));
+        
+                g.DrawString(quantityText, font, Brushes.Black, quantityTextPosition);
             }
         }
 
