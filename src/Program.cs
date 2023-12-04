@@ -296,20 +296,16 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             var simulatedResults = OperationHelper.Simulate(data.Names, data.Eats, data.Quantity, data.EatsHowMany,
                 data.DeathsPerDay, data.Replication, data.Multiplier, anzahlTage);
 
-            // Erstellen einer ListView zur Anzeige der Ergebnisse
             ListView listView = new ListView
             {
                 View = View.Details,
-                Dock = DockStyle.Fill,
-                Columns =
-                {
-                    new ColumnHeader { Text = "Name" },
-                    new ColumnHeader { Text = "Simulationsergebnis" },
-                    new ColumnHeader { Text = "Veränderung" }
-                }
+                Dock = DockStyle.Fill
             };
 
-            // Füllen der ListView mit Daten
+            listView.Columns.Add(new ColumnHeader { Text = "Name", Width = 300 });
+            listView.Columns.Add(new ColumnHeader { Text = "Simulationsergebnis", Width = 300 });
+            listView.Columns.Add(new ColumnHeader { Text = "Veränderung", Width = 300 });
+
             for (int i = 0; i < data.Names.Count; i++)
             {
                 var change = simulatedResults[i] - data.Quantity[i];
@@ -320,6 +316,16 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                     change.ToString("F2")
                 }));
             }
+            
+            simulationForm.Resize += (sender, e) =>
+            {
+                int totalColumnWidth = listView.Width - 4;
+                int columnWidth = totalColumnWidth / listView.Columns.Count;
+                foreach (ColumnHeader column in listView.Columns)
+                {
+                    column.Width = columnWidth;
+                }
+            };
 
             // Hinzufügen von Schließ- und Anwenden-Buttons
             Button closeButton = new Button
