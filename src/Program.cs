@@ -794,9 +794,9 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
                             Point adjustedCurrentPos = AdjustLineEndPoint(preyPos, currentPos, nameRadius + 5);
 
-                            using (Pen linePen2 = new Pen(Color.Black, 3))
+                            using (Pen linePen2 = new Pen(Color.Black, 2))
                             {
-                                var arrow = new System.Drawing.Drawing2D.AdjustableArrowCap(2, 3); 
+                                var arrow = new System.Drawing.Drawing2D.AdjustableArrowCap(3, 4); 
                                 linePen2.CustomEndCap = arrow;
 
                                 g.DrawLine(linePen2, preyPos.X, preyPos.Y, adjustedCurrentPos.X, adjustedCurrentPos.Y);
