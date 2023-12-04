@@ -110,8 +110,8 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
                     if (!string.IsNullOrWhiteSpace(fileName))
                     {
-                        // Combine the folder path and file name
                         data.path = Path.Combine(folderPath, fileName);
+                        if (Path.GetExtension(data.path) != ".json") data.path += ".json";
                         List<string> Names = new();
                         List<string> Eats = new();
                         List<float> Quantity = new();
