@@ -360,7 +360,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 }
             };
 
-            // ComboBox for selecting species
             ComboBox speciesComboBox = new ComboBox
             {
                 Dock = DockStyle.Top
@@ -369,7 +368,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             speciesComboBox.Items.AddRange(data.Names.ToArray());
             speciesComboBox.SelectedIndex = 0;
 
-            // Chart for displaying population data
             Chart populationChart = new Chart
             {
                 Dock = DockStyle.Fill,
@@ -378,18 +376,14 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             ChartArea chartArea = new ChartArea();
             populationChart.ChartAreas.Add(chartArea);
 
-            // Method to update the chart based on the selected species
             void UpdateChart(string selectedSpecies)
             {
                 populationChart.Series.Clear();
                 Series series = new Series
                 {
                     ChartType = SeriesChartType.Line,
-                    BorderWidth = 3 // Makes the line bolder
+                    BorderWidth = 3 
                 };
-
-                float maxYValue = float.MinValue;
-                float minYValue = float.MaxValue;
 
                 if (selectedSpecies == "All Animals")
                 {
@@ -397,8 +391,6 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                     {
                         float totalPopulation = allSpeciesData.Sum(species => species.DailyPopulations[day]);
                         series.Points.AddXY(day + 1, totalPopulation);
-                        maxYValue = Math.Max(maxYValue, totalPopulation);
-                        minYValue = Math.Min(minYValue, totalPopulation);
                     }
                 }
                 else
@@ -410,19 +402,19 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                         {
                             float population = speciesData.DailyPopulations[day];
                             series.Points.AddXY(day + 1, population);
-                            maxYValue = Math.Max(maxYValue, population);
-                            minYValue = Math.Min(minYValue, population);
                         }
                     }
                 }
 
-                populationChart.Series.Add(series);
-
-                // Set the Y-axis maximum and minimum
-                populationChart.ChartAreas[0].AxisY.Maximum = maxYValue;
-                populationChart.ChartAreas[0].AxisY.Minimum = minYValue > 0 ? 0 : minYValue;
-                populationChart.ChartAreas[0].AxisY.IsStartedFromZero = false;
+                if (series.Points.Count > 0)
+                {
+                    populationChart.Series.Add(series);
+                    populationChart.ChartAreas[0].AxisY.Maximum = Double.NaN;
+                    populationChart.ChartAreas[0].AxisY.Minimum = Double.NaN;
+                    populationChart.ChartAreas[0].RecalculateAxesScale();
+                }
             }
+
 
 
 
