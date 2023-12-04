@@ -233,7 +233,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             viewModeComboBox = new ComboBox();
             viewModeComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             viewModeComboBox.Size = new Size(120, 30);
-            viewModeComboBox.Location = new Point(500, this.ClientSize.Height - 35);
+            viewModeComboBox.Location = new Point(495, this.ClientSize.Height - 37);
 
             // Add view modes
             viewModeComboBox.Items.AddRange(new string[] {"Anzahl", "IsstWieViel", "TodeProTag", "Replikation", "Multiplier"});
@@ -836,7 +836,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         private int CalculateDiameter(float quantity)
         {
             // Example scaling logic (modify as needed)
-            int baseDiameter = 10; // Base diameter for the smallest quantity
+            int baseDiameter = 15; // Base diameter for the smallest quantity
             return baseDiameter + (int)Math.Log(quantity + 1) * 8; // Scale diameter based on quantity
         }
     }
