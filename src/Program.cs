@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.Reflection.Metadata;
 using System.Resources;
 using System.Windows.Forms;
 
@@ -770,7 +771,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 }
             }
 
-            // Then, draw connections (lines) based on feeding relationships
+            // draw arrows
             foreach (var name in data.Names)
             {
                 int index = data.Names.IndexOf(name);
@@ -786,11 +787,25 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                         {
                             Point preyPos = animalPositions[prey];
                             Point currentPos = animalPositions[name];
-                            g.DrawLine(linePen, currentPos.X, currentPos.Y, preyPos.X, preyPos.Y);
+
+                            float nameQuantity = data.Quantity[data.Names.IndexOf(name)];
+                            int nameDiameter = CalculateDiameter(nameQuantity);
+                            int nameRadius = nameDiameter / 2;
+
+                            Point adjustedCurrentPos = AdjustLineEndPoint(preyPos, currentPos, nameRadius + 5);
+
+                            using (Pen linePen2 = new Pen(Color.Black, 3))
+                            {
+                                var arrow = new System.Drawing.Drawing2D.AdjustableArrowCap(2, 3); 
+                                linePen2.CustomEndCap = arrow;
+
+                                g.DrawLine(linePen2, preyPos.X, preyPos.Y, adjustedCurrentPos.X, adjustedCurrentPos.Y);
+                            }
                         }
                     }
                 }
             }
+
 
             // Draw dots (circles) and text within white boxes
             foreach (var kvp in animalPositions)
@@ -838,6 +853,15 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             // Example scaling logic (modify as needed)
             int baseDiameter = 15; // Base diameter for the smallest quantity
             return baseDiameter + (int)Math.Log(quantity + 1) * 8; // Scale diameter based on quantity
+        }
+        
+        private Point AdjustLineEndPoint(Point start, Point end, int radius)
+        {
+            double angle = Math.Atan2(end.Y - start.Y, end.X - start.X);
+            return new Point(
+                end.X - (int)(radius * Math.Cos(angle)),
+                end.Y - (int)(radius * Math.Sin(angle))
+            );
         }
     }
 }
