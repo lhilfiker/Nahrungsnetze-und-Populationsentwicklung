@@ -53,7 +53,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
 
             // Erstelle einen Button für den Dateiauswahldialog
             Button filePickerButton = new Button();
-            filePickerButton.Text = "Nahrungsnetz Datei auswählen";
+            filePickerButton.Text = "Nahrungsnetzdatei auswählen (.json)";
             filePickerButton.Size = new System.Drawing.Size(200, 30);
             filePickerButton.Location = new System.Drawing.Point((this.ClientSize.Width - filePickerButton.Width) / 2,
                 (this.ClientSize.Height - filePickerButton.Height) / 2);
