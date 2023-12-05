@@ -887,9 +887,19 @@ namespace Nahrungsnetze_und_Populationsentwicklung
             {
                 string currentAnimal = kvp.Key;
                 Point position = kvp.Value;
+                float quantitySize = 0;
+                if (data.ShowSelection == "Anzahl")
+                    quantitySize = data.Quantity[data.Names.IndexOf(currentAnimal)];
+                if (data.ShowSelection == "IsstWieViel")
+                    quantitySize = data.EatsHowMany[data.Names.IndexOf(currentAnimal)];
+                if (data.ShowSelection == "TodeProTag")
+                    quantitySize = data.DeathsPerDay[data.Names.IndexOf(currentAnimal)];
+                if (data.ShowSelection == "Replikation")
+                    quantitySize = data.Replication[data.Names.IndexOf(currentAnimal)];
+                if (data.ShowSelection == "Multiplier")
+                    quantitySize = data.Multiplier[data.Names.IndexOf(currentAnimal)];
                 int scaledItemDiameter =
-                    CalculateDiameter(
-                        data.Quantity[data.Names.IndexOf(currentAnimal)]); // Calculate the scaled diameter
+                    CalculateDiameter(quantitySize); // Calculate the scaled diameter
 
                 // Draw the item (dot/circle) with scaled diameter
                 Rectangle drawRect = new Rectangle(position.X - scaledItemDiameter / 2,
