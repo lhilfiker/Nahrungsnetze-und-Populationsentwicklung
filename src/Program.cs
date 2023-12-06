@@ -665,6 +665,16 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 Height = 400,
                 Text = "Tier editieren"
             };
+            
+            // Check Values
+            data.Quantity[index] = CheckAndUpdate(data.Quantity[index]);
+            data.EatsHowMany[index] = CheckAndUpdate(data.EatsHowMany[index]);
+            data.DeathsPerDay[index] = CheckAndUpdate(data.DeathsPerDay[index]);
+            data.Replication[index] = CheckAndUpdate(data.Replication[index]);
+            data.Multiplier[index] = CheckAndUpdate(data.Multiplier[index]);
+            
+            Database.SaveToDatabase(data.Names, data.Eats, data.Quantity, data.EatsHowMany, data.DeathsPerDay,
+                data.Replication, data.Multiplier, data.path);
 
             // Erstellen von Labels und Textfeldern für jedes Attribut
             Label lblName = new Label { Text = "Name:", Left = 20, Top = 20 };
@@ -680,7 +690,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 DecimalPlaces = 6,
                 Increment = 0.000001M,
                 Minimum = 0,
-                Maximum = 9999999999999999999,
+                Maximum = 100000000,
                 Value = Convert.ToDecimal(data.Quantity[index])
             };
 
@@ -691,7 +701,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 DecimalPlaces = 6,
                 Increment = 0.000001M,
                 Minimum = 0,
-                Maximum = 9999999999999999999,
+                Maximum = 100000000,
                 Value = Convert.ToDecimal(data.EatsHowMany[index])
             };
 
@@ -702,7 +712,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 DecimalPlaces = 6,
                 Increment = 0.000001M,
                 Minimum = 0,
-                Maximum = 9999999999999999999,
+                Maximum = 100000000,
                 Value = Convert.ToDecimal(data.DeathsPerDay[index])
             };
             
@@ -713,7 +723,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 DecimalPlaces = 6,
                 Increment = 0.000001M,
                 Minimum = 0,
-                Maximum = 9999999999999999999,
+                Maximum = 100000000,
                 Value = Convert.ToDecimal(data.Replication[index]) 
             };
 
@@ -724,7 +734,7 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 DecimalPlaces = 6,
                 Increment = 0.000001M,
                 Minimum = 0,
-                Maximum = 9999999999999999999,
+                Maximum = 100000000,
                 Value = Convert.ToDecimal(data.Multiplier[index])
             };
 
@@ -806,6 +816,21 @@ namespace Nahrungsnetze_und_Populationsentwicklung
                 delete
             });
             editForm.ShowDialog();
+        }
+        
+        private float CheckAndUpdate(float Value)
+        {
+            if (Value < 0)
+            {
+                return 0;
+            }
+            else if (Value > 100000000)
+            {
+                return 100000000;
+            }
+
+            return Value;
+
         }
 
 
