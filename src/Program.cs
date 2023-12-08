@@ -651,6 +651,11 @@ namespace Nahrungsnetze_und_Populationsentwicklung
         {
             string animalName =
                 Microsoft.VisualBasic.Interaction.InputBox("Gib den Namen des Tieres ein", "Tier editieren", "");
+            if (string.IsNullOrEmpty(animalName))
+            {
+                return; 
+            }
+
             int index = data.Names.IndexOf(animalName);
 
             if (index < 0 || index >= data.Names.Count)
